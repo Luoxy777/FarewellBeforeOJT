@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Untitled</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .book-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        /* Chapter section */
+        .chapter-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            padding: 8px;
+            padding-left: 24px;
+            padding-right: 24px;
+            z-index: 10;
+        }
+
+        .nav-controls button,
+        .nav-controls select {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-controls select {
+            min-width: 200px;
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .nav-controls button {
+            background-color: #5421cc;
+            color: #fff;
+        }
+
+        .nav-controls button:hover {
+            background-color: #5421cc;
+        }
+
+        .chapter-content {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 18px;
+            text-align: justify;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Comments section */
+        .comments-section {
+            flex: 1;
+            position: sticky;
+            top: 50%;
+            transform: translateY(-50%);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+        }
+
+        .comments-section h3 {
+            margin-top: 0;
+        }
+
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .comments-list p {
+            background-color: #f0f0f0;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .comment-input button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: #5421cc;
+            color: white;
+            cursor: pointer;
+        }
+
+        .comment-input button:hover {
+            background-color: #5421cc;
+        }
+
+        .locked-preview {
+            position: relative;
+        }
+
+        .locked-preview::after {
+            content: " 🔒 Locked";
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-style: italic;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .fade-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            /* how tall the fade area is */
+            background: linear-gradient(rgba(255, 255, 255, 0), rgba(245, 245, 245, 1));
+        }
+
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .book-container {
+                flex-direction: column;
+            }
+
+            .comments-section {
+                position: relative;
+                top: auto;
+                transform: none;
+                max-height: none;
+                margin-top: 20px;
+            }
+
+
+        }
+
+        .back-button {
+            background: #ccc;
+            color: #5421cc;
+            font-size: 16px;
+            border: none;
+            height: max-content;
+            padding-right: 16px;
+            padding-left: 16px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            width: max-content;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="book-container">
+        <div class="chapter-section">
+            <a href="index.html"> <button class="back-button">Kembali ke Profil</button>
+            </a>
+            <div class="nav-controls">
+                <button id="prevBtn">Prev</button>
+                <select id="chapterSelect" onchange="loadChapter(this.value)">
+                    <option value="1">01 – Golden Ticket</option>
+                    <option value="2">02 – Ruang Kelas</option>
+                    <option value="3">03 – Minggu Pertama</option>
+                    <option value="4">04 – Say No to Exam</option>
+                    <option value="5">05 – Clio tidak terima, Jes!</option>
+                    <option value="6">06 – Ketua Kelas</option>
+                    <option value="7">07 – Indonesian, please</option>
+                    <option value="8">08 – Barusan itu palsu.</option>
+                    <option value="9">09 – Liam of Untitled</option>
+                    <option value="10">10 – Paling cantik ya Clio</option>
+                    <option value="11">11 – Get Well Soon!</option>
+                    <option value="12">12 – Jes dan Keberuntungannya</option>
+                    <option value="13">13 – Happy Birthday, Jes!</option>
+                    <option value="14">14 – Hakuna Matata</option>
+                    <option value="15">15 – Apa Ada Caviar?</option>
+                    <option value="16">16 – Tidak Sengaja Terbawa Arus</option>
+                    <option value="17">17 – Golden Tabby Tiger</option>
+                    <option value="18">18 – Prioritas</option>
+                    <option value="19">19 – C'est La Vie</option>
+                    <option value="20">20 – Nyaris</option>
+                    <option value="21">21 – Dua Jonathan Sage</option>
+                    <option value="22">22 – Don’t Cry</option>
+                    <option value="23">23 – Apa Yang Harus Dilakukan?</option>
+                    <option value="24">24 – Semua Berharap Ini Hanya Mimpi</option>
+                    <option value="25">25 – Bangun, Inilah Kenyataan</option>
+                    <option value="26">26 – Surat Jes (English)</option>
+                    <option value="27">27 – Surat Jes (Indonesia)</option>
+                </select>
+                <button id="nextBtn">Next</button>
+            </div>
+            <div id="chapter-content" class="chapter-content">
+                Click a chapter to start reading.
+            </div>
+        </div>
+
+        <div class="comments-section">
+            <h3>Comments</h3>
+            <div class="comments-list" id="commentsList"></div>
+            <form class="comment-input" id="comment-input">
+                <input type="text" id="commentInput" name="comment" placeholder="Write a comment...">
+                <button class="send-comment">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        const chapters = {
+            1: {
+                content: `01 – Golden Ticket
+    “Sekolah tidak pernah membosankan,” jika kata-kata itu keluar dari mulutku, pastilah aku berbohong.  Entah jurusan MIPA ataupun IPS. Beberapa murid bahkan tidak yakin apakah ilmu yang baru saja mereka pelajari akan bertahan sebelum hari Minggu dimulai. 
+    Di dalam kelas, mereka hanya terus menerus menguap, menyebarkan virus mengantuk ke murid-murid lainnya. Ada yang hanya melamun, entah melihat ke lantai, ke luar jendela, ataupun tempat pensil. Ada yang memperhatikan semua hal, baik tubuh teman mereka yang menggeliat ke kanan kiri, sepatu teman yang terus bergoyang-goyang cepat karena rasa bosan, bahkan melihat pesawat yang melintas di langit cerah. Memperhatikan semuanya, kecuali papan tulis. Meski begitu, mereka tetap berangkat ke sekolah. Rasa takut akan tinta merah membuat mereka mau tidak mau harus bangun pagi-pagi dan pulang sore-sore.
+    Ada juga dari mereka yang membuat sekolah sebagai tempat bermain, tetapi bukan berarti tidak ada yang menganggap sekolah sebagai ajang kompetitif. Sementara yang lainnya, bersekolah hanya sebagai kewajiban yang tampaknya—mau tidak mau—harus ditempuh.
+    Pasti ada solusi untuk masalah ini kan? Mari kita uji coba!
+
+    ✽
+
+    Pagi hari, kira-kira pukul delapan, langit tampak begitu biru. Jam pelajaran kedua di sekolah menengah baru saja dimulai. Roen—pria berusia 55 tahun—dengan setelan lengkap turun dari sedan hitamnya di depan lobi sebuah sekolah swasta elit. Kakinya melangkah masuk, sementara supirnya melajukan kembali sedannya ke tempat parkir.
+    Kepala Roen berputar mengamati ruangan lobi, melihat jajaran piala, piagam serta foto murid berprestasi yang terpajang. Ia menyapukan pandangannya ke dalam ruangan kemudian baru benar-benar memberikan perhatian ke pigura besar yang terpajang dekat pintu masuk. Nama "Jonathan Sage" dan wajah pemilik nama tampak begitu mencolok, rambut legam dengan mata yang panjang dan iris hazel. Piala tinggi di tangannya, tetapi wajah anak itu terlihat begitu cuek, berfoto tanpa ekspresi. 
+    Bibir Roen berubah menjadi lengkungan sabit membuat sudut matanya jadi berkerut. Itulah dia, target pertamanya dalam projek ini.
+    Tanpa terburu-buru, Roen meneruskan langkahnya, melihat-lihat kelas yang tengah mengadakan kegiatan belajar mengajar melalui jendela kelas. Ia bisa mengamati anak-anak yang terlihat duduk dengan rapi dalam kelas. Pemandangan yang sebenarnya dapat dilihat di banyak sekolah.
+    Roen baru hendak berjalan menuju ke ruang kepala sekolah ketika matanya tanpa sengaja melihat seorang anak keluar dari jajaran kelas sembilan. Anak itu bertubuh kurus tinggi, kulitnya pucat, dan wajahnya memiliki mata yang panjang juga telinga yang besar.
+    Wajah yang sama yang baru saja ia lihat dari figura tadi, Jonathan Sage.
+    Momen yang tepat sekali! 
+    Roen segera membuntuti anak itu. Mencari kesempatan yang tepat untuk memanggilnya. 
+    "Hei, Nak," panggil Roen dengan mantap, tetapi anak itu tidak menoleh. Malahan jalan anak itu semakin cepat mengarahkan dirinya sendiri masuk ke dalam toilet laki-laki. Roen terkekeh dan berpikir, "Apa ia belum berak tadi pagi?"
+    Roen menunggu di tangga dekat kamar mandi. Ia baru saja hendak memeriksa jam di tangan kirinya ketika anak itu keluar membuat Roen mengalihkan pandangan. Roen kali ini bisa melihat wajah anak itu lebih dekat dan jelas. Wajah yang pucat dan ekspresi yang kosong.
+    "Nak."
+    Kali ini Roen merasa janggal, bocah itu tidak menoleh bahkan ketika ia sudah memanggilnya dengan jarak tepat berada di sampingnya. Ia meraih bahunya.
+    "Kamu sehat?" tanya Roen dengan antar alis yang sudah menyatu.
+    Anak itu terperanjat ketika bahunya ditekan, ia refleks menoleh.
+    "Kamu baik-baik saja?" ulang Roen sembari melepaskan pegangannya pada bahu pelajar itu.
+    Anak itu memandangi Roen sebentar sebelum mengangguk. Wajah anak itu tampak lesu, tanpa ekspresi, tanpa gairah. 
+    "Ya, saya baik. Bapak ada apa?"
+    "Aku ingin bicara denganmu. Apa kamu ada waktu?"
+    "Iya, tapi saat ini saya hendak ke kantin untuk makan."
+    Roen terdiam, ia memeriksa kembali ke arah halaman yang sepi. Betul bahwa semua anak sedang belajar. Apa benar juga jika ia baru saja mendengar anak itu hendak menuju ke kantin? 
+    Senyum Roen kembali tersimpul. Tingkah pelajar itu justru meyakinkan Roen bahwa anak itu kandidat yang sempurna untuk projeknya.
+    "Haha, sekolah membosankan, ya? Kenapa? Kamu belum sarapan?"
+    "Bapak siapa?" tanyanya setelah menatap Roen beberapa lama, seolah memeriksa memori otaknya untuk memastikan bahwa mereka tidak pernah bertemu.
+    "Oh, benar," pembawaan Roen santai dan tenang, ia mengistirahatkan kedua tangannya di belakang badan, "perkenalkan, aku Roen Eknath. Panggil aku Pak Roen."
+    Anak itu mengangguk, "Kepala Sekolah Pendiri Roen, ya?"
+    "Iya, benar. Bagaimana kamu tahu?"
+    "Nama bapak mudah diingat." 
+    Roen baru ingin membuka topik baru ketika anak itu memalingkan wajahnya dan tanpa ragu melangkahkan kakinya menuju bangunan kantin. Roen memperhatikan, ia tidak merespon dengan emosi. Roen mengikuti langkah anak itu. 
+    Langkah pemuda di depannya membawa mereka masuk ke area aula terbuka yang memiliki beberapa warung di sampingnya. Setelah bertransaksi dengan ibu kantin, siswa itu membawa nampan sup panas yang kepulnya naik hingga ke wajahnya. Meletakkan nampan itu di meja dan duduk di hadapan Roen yang sudah menunggunya.
+    "Nak, aku tahu kamu punya name tag, tapi bagaimana kamu dipanggil?" tanya Roen pelan. Meski ia secara sabar menanggapinya, bukan berarti Roen tidak menganggap anak ini tidak aneh. Anak ini tidak memperkenalkan dirinya dan sepertinya hanya akan diam jika Roen tidak memulai pembicaraan terlebih dahulu. 
+    "Nama saya Jonathan Sage. Bisa dipanggil Jes," jawabnya sambil menata sendok dan garpu di tangannya.
+    "Jes? Panggilan itu tampak spesial?"
+    "Jonathan Sage, J. S., Jes. Nama panggilan saya sudah demikian sejak kecil," jawabnya kemudian mulai menyuap kuah supnya. Anak itu tidak segan, tidak berbasa-basi menawarkan makan, bahkan tampak tidak peduli pada Roen yang jauh, jauh lebih tua darinya. Roen memperhatikan ketidakpekaan sosial Jes, meski begitu ia sendiri tampak tidak terlalu terpengaruh dan melanjutkan.
+    "Jes. Aku punya satu pertanyaan untukmu. Menurutmu sekolah itu apa?" tanya Roen.
+    Jes menelan makanannya, kemudian menatap Roen sambil menjawab pertanyaan.
+    "Sekolah itu tempat informasi perlombaan dan olimpiade di sebar. Aku kemari untuk mengikuti lomba, olimpiade, dan ujian."
+    "Begitu? Kamu memang hobi mengikuti ajang perlombaan? Aku lihat ada banyak sekali fotomu di ruang piala. Seandainya kamu tersenyum sedikit pasti hasil fotonya akan jauh lebih baik."
+    Jes menggeleng, "Tidak. Hobiku menggambar dan mengotak-atik mesin."
+    Roen langsung menepuk tangannya, berseru, "Bagus! Jes, aku kemari untuk menawarkan sesuatu ..." suara Roen mulai terdengar semangat. Ia merogoh saku dalam jasnya dan mengeluarkan sesuatu.
+    "Ini, Jes,” ucapnya sambil meletakkan sebuah amplop emas ke atas meja.
+    "Ini adalah tiket emas untuk masuk ke sekolahku. Aku akan menawarimu beasi--"
+    Gerakan tangan Jes terhenti, mata tanpa cahaya itu tiba-tiba menatap Roen intens sebelum memotong ucapannya. 
+    "Tidak. Saya tidak ingin memilih Pendiri Roen. Roen terkenal berprestasi dan pasti banyak lomba, saya tidak mau mengikuti banyak lomba."
+    Roen terdiam. Ia ini sudah tua, sudah bertemu dengan berbagai macam orang. Akan tetapi, baru kali ini ia bertemu dengan orang yang begitu dingin. Jes tampaknya menganggap dirinya setara dengannya. Tidak lebih tidak kurang, Jes seolah hanya membiarkan manusia ini duduk berhadapan dengannya.
+    "Lomba ...," Roen berusaha memproses apa yang Jes barusan coba sampaikan. Roen langsung menggeleng.
+    "Tidak. Jika kamu tidak menyukai perlombaan, olimpiade, atau ujian, kamu tidak perlu melakukannya."
+    Jes tidak merespon, ia dengan cuek menyendok makanan dan melahapnya.
+    "Nak, dengarkan aku. Jika kamu mendaftar dengan tiket ini, kamu akan masuk ke dalam kelas khusus dan dapat melakukan apapun yang kamu mau di sekolah. Bukankah ini menarik?" bujuk Roen.
+    "Anggap saja hari libur, tapi kamu berada di sekolah, kamu boleh menggambar atau mengutak-atik mesin seharian."
+    "Kamu akan mendapatkan kamar asrama gratis, sekolah gratis, melakukan apapun yang kamu mau, ujian kapanpun kamu mau, dan orang tuamu tidak perlu ikut campur," jelas Roen. 
+    Hanya ketika penawaran bagian paling akhir itu dikatakan Jes kembali mendongak, memberikan perhatiannya.
+    Melihat reaksi kecil Jes, Roen tersenyum. Ia menyodorkan kembali tiketnya lebih dekat ke arah Jes. 
+    "Aku tidak mengulangnya lagi. Datanglah sendiri ke Roen jika kamu bersedia."
+    Roen kemudian berdiri dan berjalan pergi begitu mengucapkannya. Ia ingat ia harus menemui kepala sekolah sebelum keluar dari sekolah itu. 
+    Jes memandangi tiket yang tergeletak di meja kantin. Tiket yang membuat Jes berhari-hari dipenuhi dilema akan keputusan yang harus dia buat. Apa ia bisa mempercayainya?
+
+    ✽
+
+    Selesai dari satu sekolah menengah. Roen menuju ke sekolah menengah lainnya. Ia hendak menemui murid selanjutnya. 
+    Seorang bendahara OSIS, ketua ekstrakurikuler panahan, pemenang belasan lomba debat dari antar-SMP, provinsi, hingga nasional. 
+    Elisheva Jesse Olivia. 
+    Pelajar perempuan itu adalah target Roen selanjutnya.
+    Mata kucing itu terlihat galak, tetapi ketika Roen mendekatinya, wajah anak perempuan itu langsung tersenyum ramah.
+    "Siang, ada yang bisa dibantu, Pak?"
+    Dengan keramahan Sheva, Roen dapat dengan mudah menyampaikan penawarannya.
+    Dahi Sheva agak berkerut setelah mendengar penjelasan Roen, "Lalu, bagaimana saya akan lulus jika saya masuk ke Roen dengan sistem seperti itu?"
+    Pertanyaan itu membuat Roen tersenyum. Ia tidak menjawab pertanyaannya justru berkomentar, "Aku tidak menganggap itu pertanyaan bagus, Nak. Apa tidak ada pertanyaan lain?"
+    Sheva agak tersinggung. Ia diam sejenak, berpikir beberapa kali. Penawaran ini mungkin benar-benar bagus, tetapi bisa jadi juga merupakan sebuah penipuan. Ia tidak tahu bagaimana kelas itu akan dijalankan dan mendapatkan kebebasan, tentu ia senang, tetapi dengan begitu tidak ada hasil akhir yang dapat dipastikan. Mendapatkan kesempatan untuk bersekolah asrama dengan gratis … tidakkah itu terlalu murah hati? Apa yang sebenarnya direncanakan? Hanya saja, lihat siapa yang menawarkannya secara pribadi, kepala sekolah itu sendiri. Bukankah berarti kepala sekolah tampak percaya diri untuk mengadakan kelas ini? Jika ia menolaknya, adakah kesempatan lain? Apa ia tidak akan kecewa? 
+    Sheva menatap mata Roen dengan mantap dan semangat, "Ya, kurasa Bapak benar."
+    Roen ikut membalas senyumannya ramah, "Aku akan menghargainya jika kamu mengambil tiket ini. Di dalamnya ada surat untuk orang tua/wali."
+    Sheva mengangguk kuat, "Saya sangat menghargai kesempatan ini, Pak. Terima kasih."
+    "Kamu anak yang sangat sopan. Aku harap kita bertemu lagi."
+    Mengetahui Roen hendak pergi ke kantor kepala sekolah, Sheva kemudian mengantarnya. 
+    Roen kembali ke mobilnya setelah urusannya selesai, Ia tanpa sengaja membandingkan kedua anak yang ia datangi sebelum jam makan siang hari ini. Ia berkomentar, "Jika aku adalah pendatang ke negeri orang, tentu aku tidak berharap datang pada musim dingin, ketika semua orang hanya berhangat di dalam rumah."
+    Kalimat itu tampak seperti keluhan, tetapi terdapat tarikan keatas dari sudut bibir Roen. 
+
+    ✽
+
+    Sore hari di hari yang sama, Roen akhirnya sampai ke salah satu SMP. Jika sebelumnya ia menghampiri kepala sekolah setelah selesai dengan urusannya, kali ini ia mengunjungi ruang kepala sekolah di ruangannya terlebih dahulu karena merasa ada yang perlu didiskusikan lebih lanjut.
+    "Aku benar-benar tidak merasa kamu bisa mengambil Clio saja, Pak Roen," ucap Ibu kepala sekolah yang sudah duduk berhadapan di sofa dengan Roen. 
+    "Aku akan mencoba membujuknya," respon Roen tenang.
+    "Aku tidak yakin. Apa yang akan Bapak lakukan jika tidak bisa membujuknya?" tanya Ibu Kepala Sekolah dengan heran. 
+    "Aku akan berbincang lebih dahulu dengannya, juga dengan adiknya, lalu—" sebelum Roen berhasil menyelesaikan kalimatnya, Ibu Kepala Sekolah sudah memotong.
+    "Jujur, adiknya itu termasuk pintar. Masalahnya adalah ia benar-benar pendiam. Dan dibandingkan dengan Clio yang jenius, ia bagai bintang malam berbanding matahari siang," cerita sang Ibu Kepala Sekolah, mengotot bahwa Roen harus mendengar alasan untuk mempertimbangkannya.
+    "Maka seharusnya ia tahu benar untuk meninggalkan adiknya sendiri," respon Roen
+    Ibu Kepala Sekolah itu menghela napas mendengar jawaban Roen, "Kalau begitu semoga beruntung." 
+    Ibu Kepala Sekolah mempersilakan Roen melihat sendiri seperti apa hubungan kakak adik itu.
+    Dengan itu, Ibu Kepala Sekolah mengantar Roen ke kelas akselerasi. Membiarkannya sejenak melihat dari jendela kelas, apa yang dilakukan anak-anak di jam kelas tambahan tanpa guru mengawasi. Beberapa ada yang meminta tutor dengan teman sekelas, ada yang bermain hape, ada yang menggambar di papan tulis, ada yang sibuk dengan buku latihan ujian.
+    Ibu Kepala Sekolah itu melihat-lihat. Antar alisnya berkerut ketika ia tidak mendapati wajah Clio di dalam kelas, juga tidak adiknya. Ia masuk dan menanyakan keberadaan Clio ke temannya yang kemudian dijawab dengan takut-takut—karena ketahuan bermain di jam belajar—bahwa  mereka berada di lapangan basket dengan dua siswa lain.
+    Maka Roen berjalan menuju lapangan basket. Melihat tiga lelaki bermain basket, dua lawan satu, dua siswa melawan Clio. Roen terkekeh ketika melihat Clio dengan mudah mencetak skor, membiarkan temannya merebut bola sebelum ia mengundang bola itu kembali ke tangannya dan mengantarnya masuk ke dalam ring. Siklus itu berulang.
+    Permainan Clio membuat Roen tertawa. Ia bertepuk tangan ketika masuk ke dalam lapangan. "Kalian bermimpi menjadi pemain basket?"
+    Clio menatap pria yang tiba-tiba menyela permainan mereka. Mengusap keringat dengan lengan baju seragamnya. Matanya menyipit karena terik matahari ketika ia hendak memeriksa siapa pria bersetelan lengkap itu. Kehadiran pria tidak dikenal itu membuat suara angin sejenak terdengar.
+    "Tidak," jawab Clio singkat memecah keheningan.
+    "Tadi itu permainan yang cukup menghibur untuk ditonton," komen Roen sebelum melanjutkan, "Calliope, apa aku bisa berbincang denganmu?"
+    "Anda mengetahui nama saya, tapi bapak siapa?" tanya Clio—yang memiliki nama lengkap Calliope Starr—dengan nada ganjil. 
+    Tanpa memperhatikan anak-anak yang lain, matanya tertuju pada Clio saja, berkata, "Aku Roen Eknath."
+    Sebenarnya tidak banyak orang yang mengetahui nama itu. Namun, Clio mengangguk sama seperti dua orang siswa yang ia temui sebelumnya. 
+    "Ada apa?" tanya Clio singkat sebelum melempar bola basket ke arah satu temannya. Teman-temannya lanjut bermain, sementara ia berjalan mendekat pada Roen, menggiringnya berjalan ke bawah pohon. 
+    "Berteduh, Pak, pasti tidak nyaman panas-panasan," kata Clio
+    Sebelum melanjutkan percakapan, Clio menoleh, ke arah salah satu bangku semen yang mengitari lapangan basket. Ketika Roen mengikuti arah matanya, ia langsung tahu. Siswi yang mengenakan jaket kelinci, kemungkinan besar adalah adik kembar Clio.
+    "Jadi, apa yang ingin Bapak bicarakan?" tanya Clio was-was sambil menatap Roen kembali.
+    Dari ketiga orang yang ia temui hari ini, Roen merasa membangun suasana dengan Clio akan lebih sulit. Kenapa? Lihatlah tatapan matanya, meski tampak menyambutnya dengan baik, tatapan mata itu sangat waspada seolah ia siap menolak tawarannya. Roen pun sudah bersiap-siap untuk membangun suasana yang sesuai sehingga Clio bisa menganggap serius tawarannya.
+    Ia diam sejenak, melihat halaman luas yang diisi dengan murid-murid dari beberapa kelas yang tengah mengadakan kegiatan olahraga. 
+    "Kemana kamu akan mendaftar SMA?" basa-basi Roen.
+    Clio menyisipkan hening sebelum menjawab, "Apa yang bisa Bapak tawarkan pada saya?"
+    Seutas senyuman kembali terbesit di bibir Roen. Anak itu menebak dengan tepat, seolah tahu benar apa motivasinya datang kemari.
+    Sebenarnya Roen tahu, bagaimana cara untuk membuat Clio langsung menerima tawarannya. Akan tetapi, ia tidak ingin melakukannya. Ia menginginkan agar Clio saja, orang-orang yang benar-benar terpilih saja untuk masuk ke dalam kelas ini. 
+    Roen menatap Clio mantap, "Masuklah ke Pendiri Roen, aku tengah menciptakan kelas khusus di mana kalian anak-anak jenius bisa bebas dari jam pelajaran."
+    Clio memikirkan ucapan itu, matanya mengarah ke lapangan, kepalanya miring ke kiri sebelum menengadah ke langit. 
+    Roen memberikan jeda waktu sebelum melanjutkan, "Aku juga akan menyediakan asrama gratis selama kalian bersekolah di sana."
+    Saat itu, Clio juga bimbang. Ia tahu dari setiap koran digital dan artikel yang ia baca, siapa Roen di depannya. Ia percaya penawaran Roen itu asli. Ia ingin menerimanya, tapi ada perasaan dalam hati yang menahannya.
+    "Bagaimana dengan adikku, Peia? Apa Anda akan memasukkannya ke kelas itu juga?"
+    Roen menggeleng, "Ia bisa bersekolah di Roen kalau dia mau, tapi kelas ini tidak untuknya."
+    Clio kembali hening, sebelum bertanya, "Kenapa? Peia juga anak akselerasi. Dilihat dari nilainya ia pasti mampu."
+    Roen kembali mengarahkan pandangannya ke arah anak bertudung jaket kelinci. Seorang gadis kecil yang imut. Punggung tangan anak itu terlihat merah ketika membenarkan rambutnya.
+    Roen bertanya pada Clio setelah menerangkan satu fakta, "Ada ribuan anak akselerasi dan anak dengan prestasi super di negara ini. Ada sembilan yang kupilih. Apa kamu tidak akan mempertimbangkannya dengan lebih baik?"
+    Clio kembali terdiam, kali ini ia tidak menjawab. Ia justru berseru pada adiknya, "Peia! Berteduh! tanganmu sudah seperti kepiting!" 
+    Peia yang diajak bicara itu menoleh, membuat Roen tertegun ketika melihat bahwa adiknya itu ternyata seorang albino. Siapapun yang pertama kali melihatnya mungkin akan mengatakan bahwa anak perempuan itu amat cantik. Roen tidak bisa melepaskan pandangannya untuk sementara waktu. 
+    Gadis itu menutup bukunya dan berdiri. Berjalan mendekat ke arah Clio dan Roen. Gadis itu bertatapan sejenak dengan Roen, menyunggingkan senyum tipis sebelum mengarahkan kembali matanya pada kakaknya. 
+    "Masih lama?" tanyanya dengan suara yang sama halusnya dengan permen kapas.
+    Clio menarik tudung jaket perempuan itu agar wajahnya lebih terlindungi dari sinar matahari, membuat satu telinga kelinci di tudungnya membayangi sebagian wajahnya. 
+    "Tunggu saja aku di kelas," jawab Clio pada adiknya.
+    Setelah tersadar, Roen justru mengernyit. Ia mengamati penampilan perempuan itu dari ujung hingga ujung. Anak perempuan itu menggunakan stoking dan manset, menutup hampir semua kulitnya, hanya menyisakan tangan dan wajahnya. Jaket kelincinya membuat penampilannya lebih seperti gadis foto majalah daripada seorang murid. Akan tetapi, hal yang membuat Roen benar-benar terheran bukan itu semua. Itu adalah buku tebal di tangan anak perempuan itu yang sangat kontras dengan penampilan imutnya. 
+    "Confessions of Augustine?" Roen tanpa sadar mengeluarkan suara ketika membaca judul buku yang dipegang oleh pelajar itu.
+    Mendengar suara Roen yang begitu tiba-tiba. Clio mengikuti arah mata Roen. Ia menyengal napas melihat buku yang tengah adiknya pegang. 
+    "Dih, nerd," ejek Clio pada adiknya yang tidak memberikan reaksi apa-apa.
+    "Sudah sana ke kelas!" perintah Clio pada sang adik sambil melambaikan tangannya, berbeda dengan sifatnya pada Roen yang kaku, ia tampak otoritatif dengan adiknya.
+    “En,” angguk Peia sebelum melambaikan tangannya dan berbalik. Perempuan itu berjalan kembali ke arah kelas. 
+    Roen berdeham, agak malu karena barusan ia keceplosan membaca judul buku yang Peia pegang. Jujur, ia terkesan.
+    "Kamu tampak superior kepada kembaranmu," komentar Roen setelah melihat interaksi kakak adik itu.
+    "Haha, tentu saja, aku lebih tua,” jawab Clio yang bahkan tidak sehari lebih tua dengan kembarannya.
+    Clio menghela napas, mengarahkan tubuhnya kesamping menghadap Roen. "Dari ribuan itu, hanya sembilan yang dipilih. Akankah itu menjadi delapan bila aku menolak? Sepuluh bila aku menerima? Atau adakah kandidat lain?"
+    Clio berkata lagi, "Yah, lagipula, aku juga tidak sejenius itu."
+    "Kamu sejenius itu," tukas Roen. Usia Clio baru 13 tahun dan ia sudah kelas 3 SMP, itu cukup jarang ditemui!
+    "Kalau begitu, orang jenius ini ingin meminta tolong pada Bapak, pertimbangkan Peia sebagai siswa kesepuluh di kelas itu."
+    Roen menghela napas, jujur ia sudah hendak merubah pikirannya ketika ia melihat buku yang Peia baca. Ia merogoh saku di balik jasnya. 
+    "Kamu anak yang keras kepala," ucap Roen sembari menyerahkan dua tiket itu ke tangan Clio dan menepuk bahunya. 
+    "Aku akan menunggu kehadiranmu," ucapnya, tidak menyangka Clio akan merespon dengan mengulurkan tangannya. Ia membalas uluran tangan itu, merasakan jabatan tangan yang mantap sebelum melepaskannya dan menyelesaikan urusan mereka. 
+    Roen kembali masuk ke dalam mobilnya. Hari ini ia sudah mengajak tiga calon anak yang paling sulit. Setelah ini, Roen menggunakan beberapa hari berikutnya untuk memberikan enam anak lagi amplop berisi tiket emas. Beruntungnya, sisa enam anak itu mudah diajak bicara dan tahu benar kesempatan emas yang tengah diberikannya. 
+
+    ✽
+`, locked: false
+            },
+            2: {
+                content: `02 – Ruang Kelas
+    Enam bulan berlalu sejak Roen secara langsung merekrut anak-anak SMP yang akan lulus untuk bergabung ke dalam kelas khususnya. SMA Roen sendiri sudah melakukan penerimaan siswa baru. Anak-anak siswa baru itu sudah masuk selama tiga hari untuk menjalankan MPLS. 
+    Pada upacara hari Senin—upacara pertama bagi murid-murid kelas 10 yang baru saja selesai melaksanakan MPLS (Masa Pengenalan Lingkungan Sekolah)—di gedung aula serbaguna SMA Pendiri Roen, Roen yang menjadi pembina upacara, berada di atas panggung itu memberikan ucapan-ucapan. Biasanya Roen hanya akan berkata satu hingga dua paragraf tentang kebijaksanaan. Siswa-siswi SMA Roen terlihat berantisipasi ketika Roen belum menutup pidatonya setelah dua paragraf. 
+    “Setelah ini, saya akan mengumumkan hal yang agak penting.”
+    Anak-anak pilihan yang masih berbaur dengan siswa siswi lainnya itu agak tegang. Saat teman-teman mereka mulai menoleh ke kanan dan ke kiri, mereka mulai berbisik. 
+    “Tahun ini kuota masuk siswa ditambah 10 orang,” ucap seorang yang mempunyai informasi lebih dari yang lainnya. Hal itu sudah sempat jadi pembicaraan di masa MPLS. Mereka saling menduga-duga, siapa dari 10 orang itu yang katanya dipilih oleh Roen secara langsung. 
+    "Saya ingin memperkenalkan 10 anak dari antara kalian secara khusus,” ucap Roen yang seolah membenarkan asumsi banyak murid.  
+    “Mereka adalah kelas spesial yang muridnya saya pilih secara pribadi. Saya akan panggil mereka ke depan agar semua yang ada di sini dapat melihat siapa saja anggota kelas khusus ini.” 
+    Siswa-siswi itu saling memeriksa reaksi temannya. Sama sekali tidak pernah dengar tentang kelas spesial itu. Agak merasa ada yang janggal dengan kalimat pertama Roen. Mereka semua mulai memikirkan kelas spesial apa yang mungkin tengah dibuat, dan berharap jika ada sedikit kemungkinan bahwa diri mereka masing-masing mungkin anak pilihan itu. 
+
+    
+
+    Roen membacakan nama-nama tersebut dari tabletnya. Ruangan upacara itu begitu hening. Beberapa kali membuat langkah anak-anak yang naik ke panggung itu terdengar keras. Orang-orang di barisan belakang memiringkan kepala mereka, mencari celah untuk melihat sosok-sosok yang berada di panggung. Sesekali berkomentar dan membuat suara berbisik itu kadang sangat mengeras, kadang menjadi begitu hening. 
+    Setelah memanggil semuanya, Roen lantas mengalihkan pandangannya sepenuhnya ke arah 10 anak itu. Melihat bahwa kesepuluh anak itu masih kekurangan tanda untuk benar-benar membedakan mereka itu dari sisa angkatannya. 
+    “Untuk membuat mereka lebih dikenali, saya akan memberikan mereka pin berbentuk U,” ucap Roen. 
+    Guru yang bertugas segera mengambil nampan yang berisi pin dan menyerahkan satu pin ke masing-masing dari mereka. Anak-anak untitled menerima pin seukuran 2x2cm. Mereka memperhatikan detail bentuk pin yang menunjukkan huruf U itu. Beberapa dari mereka melihat satu sama lain, tidak tahu di mana harus dipasang pin itu. 
+    "Kalian boleh pakai di mana saja. Kalian bahkan boleh memodifikasi pin itu, tapi pertahankan bentuk U dan warna emasnya. Aksesoris itulah yang akan membantu semua orang membedakan kalian dari kelas lainnya," kata Roen ketika melihat murid-murid Untitled itu tidak tahu harus meletakkan pin itu di dada kanan atau kiri setelah menerimanya lantas berkata,
+    Roen kemudian melihat kembali ke arah barisan murid SMA Pendiri Roen yang mulai amburadul. Badan mereka meliuk-liuk berbisik dan berbicara dengan teman mereka.
+    "Mereka memiliki akses khusus ke setiap ruangan yang ada di sekolah ini, tidak terkecuali," papar Roen.
+    Pernyataan itu membuat geger, suara geremengan anak-anak mulai terdengar lebih keras.
+    "Mereka adalah anak-anak dari Untitled Class yang tepat berada di bawah pengawasan saya sebagai kepala sekolah," lanjut Roen memberikan penekanan pada “Untitled Class”.
+    Ketika nama kelas itu disebut, bahkan kesepuluh anak yang berjejer di depan itu mulai tidak berdiri tegak. Mereka bertolah-toleh menghakimi nama kelas yang jelek itu. Sebab, untitled artinya "Belum diberi judul" atau "Tidak berjudul", siapa yang menganggap nama itu baik?
+    "Saya hanya ingin kalian memberikan pengertian kalian bila suatu saat mereka menyelonong ke kelas kalian tanpa peringatan. Atau apabila kalian melihat mereka berada di ujung lab ketika kalian tengah belajar di laboratorium. Atau bila ada anak yang bermain-main di lapangan ketika jam pelajaran tengah berlangsung. Baik para guru dan murid-murid yang lain, perhatikan bila mereka memiliki wajah-wajah ini dan memiliki pin U, mereka adalah anak dari kelas untitled. Mereka tidak memiliki penalti, tapi tentu saja, bila ada hal-hal berlebihan kalian bisa melaporkannya secara pribadi kepada saya. Saya yang akan menindaklanjuti."
+    Ada keramaian yang hebat, sebelum seorang murid mengeraskan volumenya dan menarik semua perhatian, ia mengatakan, "Itu tidak adil! Kami sama-sama bersekolah di sini, mengapa mereka bisa memiliki hak istimewa dan tidak dengan kami?!"
+    Roen tampak tenang, tidak mungkin ia tidak memikirkan pertanyaan ini akan keluar dari para muridnya. 
+    "Bagi kalian: sekolah adalah sekolah. Sekolah adalah tempat menimba ilmu, tempat ujian harian, uts, uas, lomba dan olimpiade juga berorganisasi, tempat bersosialisasi dan bermain. Apa keuntungan yang kalian dapatkan? Tentunya ilmu, nilai rapot, sertifikat dan piala-piala. Juga sistem terstruktur yang sudah dibuat untuk membuat kalian meraih semua itu. Struktur yang bersistem itu juga memudahkan kalian untuk masuk ke perguruan tinggi," jelas Roen dengan perlahan. 
+    "Tapi bagi kelas untitled. Saya tidak menyediakannya. Tidak ada sistem yang diterapkan. Saya bahkan belum merapikan ruang kelas mereka. Kemungkinan juga tidak banyak guru tersedia untuk mengajar mereka karena semuanya hanya disesuaikan dengan kuota kalian," tambah Roen. 
+    "80% anak sekolah ini masuk ke dalam universitas ternama setiap tahunnya, jelas sistem yang ada di sekolah ini sudah hampir sempurna bukan? Kalian tidak perlu iri. Tidak ada yang bisa menjamin apakah 8 dari 10 anak ini akan masuk ke universitas besar."
+    "Lantas mengapa kelas seperti itu dibuat?" seru salah seorang yang lain.
+    Ketika pertanyaan itu dilontarkan, Roen tersenyum. "Itu rahasia. Mereka ini kan jenius, jadi biar mereka yang mencari tahu jawabannya." Roen mengarahkan tangannya pada kumpulan anak Untitled.
+    Sepuluh anak yang berdiri di panggung itu memang terlihat cerdas, rapi, dan cantik juga tampan. Meski begitu, kebanyakan anak fokus pada seorang berambut putih krim. 
+    "Apakah dia albino?"
+    Clio tidak peduli, ia tahu Peia sudah terbiasa dengan perhatian yang dilontarkan lingkungannya karena dia berbeda. Akan tetapi, tidak dengan Muna yang bersebelahan dengan Peia, ia merasa risih dari banyaknya tatapan kearah Peia. Muna mendekat ke arah Peia, berbisik, “Tidak ada yang aneh dari kamu. Kamu cantik kok!” 
+
+    ✽
+
+    Setelah pidato selesai, anak-anak untitled dibariskan terpisah di paling samping dengan anak-anak kelas senior. Anak-anak senior itu dapat melihat, betapa mudanya anak-anak dari kelas baru itu dengan tubuh pendek dan wajah-wajah kecil kemuda-mudaan.
+    Upacara dilangsungkan hingga selesai, dan para murid dibubarkan untuk kembali ke kelas masing-masing. Anak-anak untitled menyunggingkan senyuman ramah ke satu sama lain, kecuali satu orang yang tampak tidak terlalu memedulikan suasana lingkungannya. 
+    "Kemana arah kelas kita?" tanya satu dari sepuluh anak. 
+    Sepuluh anak itu semua diam, menggeleng, memalingkan mata. Tidak ada yang tahu. Mereka berdiri di situ tanpa kepastian sebelum Roen datang. 
+    Roen melihat kesepuluh anak itu dengan mesem, "Haha, ayo, kuantar ke kelas kalian."
+    Mereka semua berjalan mengikuti Roen. Sebelum dengan cepat, Florie, perempuan berambut gelombang seleher itu menceletuk, "Pak, sungguh? Bapak tidak akan memberi tahu kami mengapa Bapak membuat kelas Untitled?"
+    Roen tersenyum, "Semakin lama kita berinteraksi, kalian akan tahu, saya melakukan apa yang saya katakan."
+    Mereka diam setelah Roen mengatakan itu. Mereka tidak tahu apa yang sedang direncanakan Roen, dan tampaknya beliau bukan tipe yang mudah bicara.
+    Mengikuti langkah Roen. Mereka keluar dari lapangan, menuju ke gedung dan masuk lobi SMA, menaiki tangga kemudian ke sayap utara lalu berhenti di ruangan tepat antara laboratorium dan pintu perpustakaan lantai dua. 
+    "Kelas kami benar-benar terpisah dari yang lain?" tanya Muna.
+    Semua kelas belajar mengajar berada di sayap selatan. Sayap utara seharusnya hanya diperuntukkan bagi laboratorium. Tetapi kelas mereka justru terletak pada perbatasan antar laboratorium IPA di bagian selatan, komputer di timur, dan perpustakaan di sebelah utara.
+    "Hmm, semua ruang kelas kan punya dinding kaca jadi akan sangat mengganggu yang lain jika kalian nantinya sering berkeliaran, jadi aku memberi ruangan kalian di sayap utara."
+    "Tempatnya juga bagus, kemana saja dekat. Perpustakaan tinggal masuk ke sebelah dan laboratorium juga cuma lima langkah. Tidak terlalu terpencil juga, di seberang tangga kalian bakal melihat betapa ramainya saat istirahat."
+    Mereka mengangguk-angguk, ada yang setuju, ada yang coba memahami, ada yang menerima saja. 
+    Roen merogoh sakunya, "Ini kuncinya, kalian bukalah." Ia menyerahkan kunci itu kepada siswa terdekat di sampingnya, Amos, yang paling tinggi dan paling hitam di antara anak-anak lainnya.
+    Amos menerima kunci itu kemudian memasukkannya pada lubang kunci. Ia mendorong pintu itu agar terbuka.
+    "...." tidak ada reaksi khusus dari Amos ketika melihat isi ruangan itu, ia mundur, membiarkan teman-temannya melihat.
+    Ada banyak tumpukan kardus dengan macam macam tulisan seperti "CHEM", "BIO", "FRAGILE" di dalam ruangan kelas mereka.
+    "Apa ini? Gudang?" suara Ina mengejek, ia merasa konyol dengan apa yang terjadi pada mereka.
+    Jes tidak terlalu peduli. Peia juga tidak bereaksi banyak, ia hanya melihat reaksi teman-temannya dan meliihat kembali apa saja isi gudang itu. Amos menggaruk antar alisnya yang tidak gatal. Florie sudah berusaha berjalan masuk ke ujung gudang. Liam tersenyum konyol. Sementara Muna tampak kecewa.
+    "Anda bermain-main dengan kami, Pak?" keluh Clio kecewa.
+    Roen memiringkan kepalanya. "Apa yang kalian kecewakan?"
+    "Ini adalah gudang! Kami tidak bisa belajar di dalam sini. Anda ingin kami duduk di lorong?" kesal Clio sambil membuka pintu lebih lebar agar semua anak melihat lebih jelas.
+    Semua mata yang sudah melihat seperti apa kondisi kelas itu, menatap ke arah Pak Roen. Penjelasan Pak Roen yang nantinya akan menjadi bahan pertimbangan akan keputusan apakah mereka akan tetap ingin berada di Untitled. 
+    Roen sama sekali tidak merasa terbebani dengan tatapan itu, ia dengan ringan berkata, "Terserah. Bukankah sudah kubilang, kalian boleh melakukan apapun? Mau menjadi 10 anak lembek yang komplen karena tidak tahu cara membersihkan gudang, atau 10 anak yang baik, itu terserah kalian."
+    Sheva menghela napas, terdiam. 
+    "Kurasa tidak apa bukan," ucap Sheva sembari melihat ke arah Clio, melihat nametag laki-laki itu, "Calliope, bukannya itu nama perempuan? Pokoknya, aku tidak keberatan. Ini ruang kelas yang paling dekat dengan setiap laboratorium. Luasnya bahkan cukup untuk menampung 30 murid, kita hanya bersepuluh. Kita hanya perlu membersihkannya, kan?"
+    "Ck, panggilanku Clio, dan ... baiklah ini ruangan yang bagus. Tapi, kalian mau mengangkat seluruh tumpukan kardus itu?"
+    Florie yang sudah menelusuri sampai dalam-dalam berteriak, "Ini benar-benar mentok sampai ke belakang, penuh dengan alat laboratorium, alat elektronik yang rusak, tumpukan koran dan buku-buku majalah!"
+    Ina terkekeh, "Kalian akan menyuruh aku, seorang perempuan yang tidak pernah susah untuk mengangkat semua ini keluar? Aku tidak mau!"
+    Liam berdeham, "Oh, ayolah, kita bersepuluh, bukan bertiga atau berlima! Ruangan 9 x 8, kita hanya perlu membersihkan 7,2 meter persegi setiap orang. Itu hanya 2 * 3,6 meter!"
+    Sheva mengangguk, "Toh kita belum punya jadwal. Mari bersihkan."
+    Florie kembali, kemudian menghitung semua teman-teman barunya dalam hati, "Kenapa kita hanya bersembilan. Siapa satu lagi?"
+    "Oh, hei!! Kalian di situ rupanya, astaga! Haha, aku lebih dulu ke sayap selatan karena kupikir kelas kita ada di sana. Omong-omong anak-anak di sini benar-benar memiliki vibe yang unik, mereka juga terbagi dari kelas A sampai F berdasarkan ranking!"
+    Melihatnya Sheva menghela napas.
+    Roen berdeham. "Baiklah, karena semua sudah di sini. Ini." Ia menyerahkan sebuah kartu lagi, kali ini pada Sheva. "Aku tidak tahu kalian memiliki kursi dan meja atau tidak, gunakan kartu ini jika perlu membeli sesuatu. Pinnya: 120317."
+    Sheva tidak percaya ketika menerimanya. Itu adalah kartu emas dengan nama Untitled Class. Mereka semua benar-benar kaku membisu menerimanya. Bahkan Sheva tidak sempat mengucapkan terima kasih. Kelas mana lagi yang mendapat dana langsung dari kepala sekolah? 
+    "Baiklah, aku pergi dulu. Aku akan kembali kalau kalian sudah mempunyai kelas," ucap Roen setelah dengan kerennya memberikan kartu itu. Ia menepuk bahu Liam di sampingnya dan berjalan pergi. 
+    Ketika Roen sudah berjalan cukup jauh. Florie tidak bisa tidak berkomentar, "Wah, aku ingin periksa saldonya."
+    Ina terdiam, ia menyambar kartu itu dari tangan Sheva. "Kalau kita boleh melakukan apa saja, bukankah tidak apa menggunakan ini untuk pribadi?"
+    Amos menggeleng, "Aku tidak tahu. Tapi aku yakin perlakuan kita di sini dicatat, kan?"
+    Sheva menghela napas. "Biar aku yang pegang, percaya padaku. Aku adalah seorang bendahara OSIS saat SMP." Ia meminta kembali kartu itu pada Ina.
+    Karena mereka semua setuju, Ina hanya bisa merengut kemudian menyerahkan kartu itu ke tangan Sheva yang sudah terjulur.
+
+    ✽
+
+    Mereka mulai membagi tugas. Di seberang mereka ada gudang kecil yang memang dikhususkan untuk menyimpan semua barang-barang tidak terpakai. Jadi, agar kelas mereka berhasil dirapikan mereka juga jadi harus menata gudang kecil itu agar muat dengan banyaknya peralatan.
+    Tiga orang menerima barang dari kelas utama dan menata gudang kecil: Jes, Florie, dan Peia. Sisanya membersihkan kelas utama mereka.
+    Mereka semua tampak serius membersihkan, mencoba memberikan impresi pertama yang baik pada teman-teman mereka. Namun, keheningan itu pecah ketika Lucas berteriak. 
+    "Hei, yang namanya seperti perempuan! Bisa bantu aku angkat ini?"
+    Clio—Calliope bergender maskulin—langsung menoleh dengan tatapan tajam.
+    Lucas yang melihat reaksi itu agak geli, tapi ia melanjutkan, "Kenapa sih, nyatanya juga menoleh. Ayo sini bantu aku!"
+    Clio berjalan mendekat ke arah Lucas. Tatapan Clio dan kernyitan di antar alisnya, membuat Lucas jadi waspada. Bibir Clio meliuk keatas dan ia tanpa ragu mengarahkan tangannya untuk mencengkeram kerah Lucas, "Perlukah kita berkelahi? Kita lihat lebih gagah siapa?"
+    Kejadian itu mencuri perhatian orang-orang dalam kelas.
+    "Hei! Hei!" Amos langsung menengahi, sehingga Clio terpaksa melepaskan kerah Lucas.
+    Lucas cukup kaget, ia menghembuskan napas lega sebelum membenarkan kerahnya. Ia tidak menyangka anak yang tampak dua tahun lebih muda darinya itu ternyata sangat sensitif. Lucas hanya tersenyum setelah menyadarinya, ia justru merasa bahwa tingkah Clio agak menggemaskan.
+    "Haha, aku lupa namamu, siapa? Chloe, Calliope, Camila? Rasanya juga tidak benar memanggilmu, 'dek' karena kita sekelas, atau 'anak jenius' karena semua orang di sini jenius. Maaf jika kamu tersinggung," jelas Lucas dengan ringan.
+    Clio ingin kembali menggertak, tetapi Amos sudah melerai dan ia menatap Lucas. Amos tahu Lucas hanya bercanda, jadi ia tidak mengatakan apa-apa.
+    "Ah, iya, kita belum benar-benar berkenalan dengan satu sama lain," celetuk Muna.
+    "Panggil aku Clio," tukas Clio cepat.
+    Mereka memperkenalkan nama panggilan mereka, kemudian kembali melanjutkan acara beres-beresnya.
+    Percaya atau tidak percaya, dari pagi hingga sore, pekerjaan mereka hanyalah mengeluarkan kardus-kardus. Kemudian menyapu, melepaskan tirai.
+    Mereka bertahan sampai pukul 6 sore berada di kelas, badan mereka mulai terasa pegal-pegal jadi mereka memutuskan untuk melanjutkan kegiatan apapun besok.
+
+    ✽
+
+    Pagi keesokan harinya di asrama mereka mulai membandingkan bagian tubuh mana saja yang pegal, atau berapa koyo yang sudah menempel di tubuh mereka. Saling bercanda dalam perjalanan menuju sekolah. 
+    Mereka kelelahan, tapi setidaknya kelas mereka sudah tampak seperti ruangan kosong yang bisa dihias sesuka mereka. Mereka mulai berdiskusi bagaimana akan menata ruang kelas mereka, saling memberikan ide akan apa saja yang mereka mau. 
+    Mereka duduk melingkar di ujung kelas di atas lantai keramik tanpa alas. 
+    Lucas memiringkan kepalanya, “Aku suka warna biru,” ucapnya ketika mengusulkan tema warna yang akan diangkat dalam kelas mereka.
+    Clio yang mendengarnya berdecak, “Merah. Biru terlihat lembek!”
+    Lucas yang mendengar itu justru melepaskan tawa mengejek, “Haha, merah, kaya cewe.” 
+    Anak-anak yang lain otomatis bertukar pandang. Baru dua hari dan kedua anak itu sudah terus-terusan bertengkar. 
+    Sheva mengangguk, “Paling kalem biru muda sih, ada usul lain kah?”
+    Florie ikut mengusulkan, “Kenapa kita gak buat lantainya vinil kayu dan temboknya hijau?” 
+    “Hah?? Hijau?? Green screen?” Ina langsung memasang tampang jijik. 
+    Liam mengendikkan bahu, “Biru muda bagus.” 
+    Ina mengangguk, “Aku suka pink, tetapi warna biru muda tampak lebih masuk akal.” 
+    Muna melihat ke sekeliling, kemudian menunjuk ke sisi selatan kelas, “Aku tidak peduli dengan warnanya, tetapi aku ingin ada piano di sana.”
+    Amos bermain dengan hapenya mencari referensi dan ketika gilirannya, ia berkata, “Aku ingin meja putih, kursi yang nyaman. Aku akan suka kalau lebih banyak warna netral.” 
+    Jes sudah menggambar di dalam buku sketsanya, kemudian menunjukkan hasilnya pada mereka. Ia meletakkan buku sketsanya di lantai. Dan orang-orang langsung menanggapi. 
+    “Gila, kamu pelukis juga?” tanya Lucas melihat Jes yang sudah menggambar seperti apa denah kelas yang ia inginkan. 
+    “Ini lemari, ini piano. Bagian meja atau kursinya ini terlalu mewah, haha. Di sini, ini meja juga? Untuk apa?” tanya Muna sambil menunjuk-nunjuk gambar Jes dengan telunjuknya, ia tidak mengerti dengan satu meja yang menempel miring di tembok, tidak menghadap papan tulis. 
+    “Itu meja drafting. Aku mau menggambar,” singkat Jes. 
+    Clio menatap Jes, seolah menimbang apa yang dia katakan tetapi ia pikiran itu tidak bertahan lama. Clio lantas menepuk bahu adiknya, “Kamu usul juga, mau seperti apa?” 
+    Peia menggeleng, “Terserah.” 
+    Clio berdecak, “Harus ada lemari bukunya kan, Pei?” 
+    Mendengar lemari buku, senyum Peia mengembang begitu saja.
+
+    ✽
+
+    Satu per satu peralatan kelas mulai dibawa masuk. Di hari yang keempat, kelas mereka sudah selesai. 
+    Ruangan 9 x 8 dengan jendela di bagian barat yang tadinya penuh sesak dan berdebu itu telah disulap menjadi sebuah gubuk tersendiri bagi kelas untitled.
+    "Wah."
+    "Wah ...."
+    Matahari senja di ufuk barat membuat suasana kelas saat sore hari tampak lebih menakjubkan lagi.
+    Ruangan kelas memiliki lantai vinil abu-abu dengan dinding putih. Terdapat papan tulis kaca berjajar yang ada di tembok bagian utara,
+    Mereka memilih lima meja berwarna putih agak keabu-abuan, ditata tiga depan dan dua di belakangnya secara zigzag. Serta dua kursi setiap satu meja. Sengaja tidak memilih meja individu karena merasa 10 meja dan 10 kursi di ruangan sebesar 9 x 8 itu tidak perlu, toh kemungkinan mereka tidak akan selalu berada di meja.
+    Mereka mendesain kelas tersebut bersama-sama. Satu meja guru dengan ukuran yang sedang, dan kursi biru yang sama dengan semua kursi.
+    Mereka juga memberikan loker berwarna biru, yang ada tepat di depan pintu, terletak di dinding selatan. Hanya itu saja yang normal dari kelas untitled.
+    Di dinding timur, atas saran Jes, ia ingin ada meja drafting di sana. Ia mendapatkan meja drafting putih lengkap dengan seluruh penggaris dan rapidonya, serta lampu yang menggantung di atasnya. Sementara di sebelahnya lagi adalah dinding kaca, sehingga Florie meletakkan pot tanamannya di situ. Setelah itu ada pintu kaca dorong di sebelah utara.
+    Sementara di bagian dinding selatan, terdapat dua rampel loker biru tiga kali dua. Kemudian lemari meja berisi jajanan dan aneka makanan. Kemudian atas usul Liam mereka harus punya kotak kamera. Atas usul Florie mereka memasukkan kotak p3k ke lemari meja. Kemudian papan kayu berada di atas lemari dan loker sebagai tempat buku-buku dan globe.
+    Di samping itu, atas usul Muna, diletakkan piano berdiri. Kemudian di sudut ruangannya, terdapat televisi untuk bermain PS. Di sebelahnya lagi terdapat rak buku tinggi 2 x 6 partisi.
+    Mereka juga menaruh dua kursi bantal, karpet biru abu-abu. Mereka juga  mengatur kabel agar stop kontak berada di tengah susunan meja, atau berada di belakang meja kedua.
+    Selain proyektor, gambar garuda, presiden, wakil presiden, jam dinding digital yang terletak di dinding belakang meja guru, serta ikatan bunga palsu dengan tema ungu di vas yang terletak di atas meja guru di samping gelas spidol. Tempat sampah ada di luar kelas jika itu yang ingin ditanyakan.
+
+    ✽
+
+    Keesokan paginya, setelah mereka merasa bahwa seisi kelas telah ditata dengan indah, mereka saling bertukar pandang. 
+    "Jadi, apa yang akan kita lakukan?" tanya Florie sembari mengambil tempat duduk di ujung depan dekat tanaman segar. 
+    Clio merogoh sakunya mengambil smartphonenya, kemudian memotret ruang kelas dan mengirim pesan bergambar itu kepada sang kepala sekolah, sebelum kemudian menekan ikon telepon.
+    Clio men-speaker panggilan itu. Membuat banyak dari mereka berpikir bahwa bocah ini terlalu berani, agak sedikit kurang ajar, karena Clio tampak tidak ragu sekali menelepon orang tersibuk di sekolah. 
+    "Halo?" suara serak dan ramah itu terdengar dari speaker ponsel Clio. 
+    "Halo. Selamat pagi, Pak Roen, saya Clio."
+    "Oh-" Senyuman pak Roen terdengar, "Pagi, Clio, ada apa?"
+    "Saya sudah mengirimkan foto kelas kepada Bapak. Kelas kami sudah selesai ditata, jadi Bapak bisa kemari untuk berbincang sesuai dengan perkataan Bapak."
+    "Oh, haha baiklah. Terima kasih sudah memberi tahu, saya baru selesai rapat jadi tunggu saya ya."
+    "Baik, Pak."
+    Panggilan diakhiri.
+    Jes lantas duduk di depan meja draftingnya dan menggambar. Peia membaca buku, begitu juga dengan Amos. Sheva mendengarkan music, kemudian belajar dengan gawainya. Ina memilih untuk ngemil jajanan yang tersimpan di lemari. Muna membuka pianonya dan mulai berlatih. Liam dan Lucas membuka laptop mereka dan entah apa yang mereka lakukan. Sementara Florie juga membaca buku, serta belajar dari menonton video. 
+
+    ✽
+`, locked: false
+            },
+            3: {
+                content: `03 – Minggu Pertama
+    Roen masuk ke dalam gedung SMA sambil melepaskan syalnya. Ia memperpanjang langkahnya dan mendorong kakinya untuk berjalan lebih cepat. Ia  memeriksa jam di tangannya yang jarumnya menunjuk ke angka tiga. Ia baru saja sampai kembali ke PR setelah 7 jam penerbangan dari tempat rapatnya. 
+    Roen tidak bisa menyembunyikan senyumnya ketika langkahnya tidak jauh lagi dari kelas untitled. Sepatu pantofelnya membuat ketukan accelerando. Clio sudah mengirimkan satu foto ruang kelas yang memberikan foto meja dan kursi yang tidak pernah ada di sekolahnya selama ini. Hanya saja, foto itu tidak memberikan gambar keseluruhan kelas.
+    Roen memperlambat langkahnya ketika melihat gantungan akrilik bertuliskan "UNTITLED CLASS" di atas pintu kelas. Sekilas Roen melihat ke arah jendela kaca dan herannya tidak melihat satu pun anak di meja belajar. Ia segera menggeser pintu kaca, melihat ruangan yang sudah disulap dari gudang menjadi … jika ada rating untuk sebuah ruang kelas, ruang kelas ini memiliki bintang lima untuk fasilitasnya. Akan tetapi, selain Jes yang masih sibuk menggambar di meja draftingnya, ia tidak melihat anak lain di kelas.
+    Ia berjalan mendekati Jes, melihatnya lihai menggoreskan penanya dan garis-garis yang dibuatnya menjadi tampak menjadi benda yang begitu indah dengan tangan lentiknya. Roen mengangguk-angguk. Sebelumnya ia merasa tidak perlu ada meja drafting dalam kelas. Akan tetapi, melihat keahlian Jes, ia tidak jadi mempermasalahkannya. 
+    "Jes di mana teman—” baru ia hendak bertanya, sudut pandangannya menangkap barisan anak yang tertidur di karpet selebar dua setengah meter itu.
+    Roen otomatis tergelak. "Ah, haha, apa kalian memutuskan untuk tidur bersama-sama satu kelas?"
+    Jes yang dipanggil itu menoleh, ia juga baru sadar teman-temannya sudah tergeletak nyaman sekali di karpet yang hangat itu. Jes kemudian melihat ke arah jam digital di meja. 
+    "Kami menelepon Anda pukul tujuh dan Anda baru datang pukul tiga," respon Jes.
+    "Bahkan Sheva juga tidur?" komentar Roen. 
+    Mengingat bahwa ruangan kelas ini cukup besar dan mereka membersihkan dan menatanya dengan minim bantuan, Roen mengangguk, mereka pasti sangat lelah. 
+    Sheva yang merasa dipanggil itu membuka matanya, memeriksa apa yang terjadi dan menggeliat untuk duduk. "Huh!" Ia tersentak kaget melihat sang kepala sekolah sudah berada di depannya. Tanpa basa basi ia langsung menggoyangkan tubuh teman di sebelahnya. Sheva berbisik, "Bangun, bangun, Pak Roen sudah datang."
+    Sementara Sheva mulai membangunkan teman-temannya, dan teman yang beruntutan membangunkan temannya.
+    Roen melihat mereka satu persatu. Melihat dua yang paling muda, Clio dan Peia yang tertidur di kursi bantal begitu nyenyak. Ia lantas bertanya pada Jes yang sudah merapikan pena dan beberapa kertasnya.
+    “Kamu tidak mengantuk?” 
+    Jes menatap kembali Pak Roen, memastikan bahwa dirinya yang diajak bicara kemudian menggeleng. Roen mengangguk-angguk kecil. Roen menambahkan kekagumannya pada Jes. Anak itu terlihat lebih disiplin daripada dirinya. 
+    Roen lantas berjalan kembali ke meja guru. Ia membiarkan mereka mengumpulkan jiwa mereka. Dengan tenang Roen duduk di kursi yang disediakan untuk pengajar. Untuk sesaat, Roen hanya mengamati interiornya. Ia merasa kombinasi warna biru pastel dan putih itu cukup bagus, tapi tidak sebagus ungu dan kuning, warna kesukaannya.
+    Lima menit berlalu dan anak untitled sudah selesai mencuci muka dan duduk di kursi masing-masing.
+    "Kita akan berdiskusi panjang," buka Roen.
+    "Untuk sekarang coba jelaskan kelas kalian, mengapa kalian membuatnya sedemikian rupa," sambil memutar-mutarkan jari telunjuknya ke atas. 
+    Muna mengangkat tangan. Ketika dipersilakan bicara, ia tersenyum tipis, "Kami memilih meja yang luas untuk berdua karena meja ini nyaman untuk dipakai berdua, tapi juga nyaman untuk digunakan satu orang, tidak ada sekat dan bersih. Serta warna mejanya putih ke abu-abuan yang mengkilap dapat digunakan untuk digambar dengan spidol."
+    Roen mengangguk-angguk. "Itu bagus."
+    Liam mengangkat tangan, dan ketika Roen mengangguk ia melanjutkan, "Awalnya kami berpikir untuk memilih nodechair yang bisa bergerak bebas dengan meja yang cukup untuk laptop, tapi enam dari kami tidak setuju setelah mencoba kursinya karena terkadang geraknya tidak terkontrol, meja yang terlalu kecil, serta gerakan kursi yang mungkin akan mengganggu belajar. Hal itu menurut kami juga tidak terlalu cocok untuk ujian."
+    Sheva menambahi, "Kami memikirkan kursi-kursi lainnya, seperti kursi ergonomis. Tapi pada akhirnya kami memilih kursi ini karena punggung kursinya lentur serta memiliki bantalan pada tempat duduknya, cukup nyaman."
+    Roen mengangguk. Kemudian melihat ke arah meja drafting dan piano. Ia membuka dengan perkataan, "Aku suka tanaman hijau di dalam kelas, itu menghidupkan suasana ... tapi, ekhem, piano dan meja drafting ... ide siapa itu?"
+    Muna langsung mengangkat tangannya tinggi, juga Jes dengan wajah tak tertarik itu mengacung.
+    "Baiklah, turunkan tangan kalian. Apa itu? Komputer, konsol game?"
+    Lucas langsung mengangkat tangannya, "Tentu, kenapa tidak dengan komputer gaming?"
+    Baiklah. Roen sudah menduga hal ini akan terjadi, tetapi meja drafting itu mencuri perhatiannya berkali-kali. Sudah seperti sekolah arsitek saja. 
+    "Kalian ada-ada saja,” Roen sedikit mengerutkan alisnya, menatap Liam dan menghela napas. Sekarang bisakah kalian satu persatu maju dan memperkenalkan diri? Mulai dari yang paling ujung," pinta Roen yang langsung membuat siswi di ujung timur berdiri.
+    Siswi itu berjalan maju.
+    Mereka sudah mengenal siapa teman mereka itu, tetapi mereka tetap antusias dan mengamati perempuan itu dengan benar. Gadis berkulit gelap dengan rambut hitam gelombang seleher dan berponi. 
+    "Hai! Nama aku Queen Florie Diona, biasa dipanggil Florie dan aku sangat suka biologi dan itu juga membuatku menyukai tanaman dan binatang. Aku juga banyak belajar hal obat-obatan. Umurku 16 tahun, dan sebagai yang tertua di kelas kalian bisa mengandalkanku!"
+    Kemudian majulah gadis berkulit putih dengan rambut lurus panjang dan poni lebat. Tubuhnya kurus tetapi wajahnya bulat kekanak-kanakan, matanya sipit tapi bening, auranya imut dan menawan. 
+    "Hai, semua. Kenalin aku Muna Grace Isabella, umur 15 tahun. Aku cukup mahir bermain piano dan biola, beberapa alat musik lain seperti kalimba, saxophone, trombone, juga bisa aku mainkan. Awalnya aku hanya mengenal music klasik, tapi aku juga mulai mengenal music-musik kontemporer dari sosial media. Terima kasih."
+    Setelah itu True Liam maju, lelaki berusia 15 tahun berponi dengan rambut hitam, dan matanya berbentuk almon memperlihatkan darah Indonesianya. Akan tetapi, iris mata yang berwarna madu dan batang hidung yang tinggi menunjukkan darah barat, tepatnya darah Jerman. 
+    Saat ia maju kedepan, orang-orang bisa menebak. Anak dengan arloji mahal di tangan kanannya itu punya kepercayaan diri yang kuat sampai orang-orang bisa langsung melihatnya. 
+    "Sekali lihat juga tahu, aku yang paling tampan di kelas. Hai, namaku Liam, seumuran sama Muna. Aku ahli fotografi, editing, dan coding," ucapnya yang membuat beberapa orang menyorakinya. 
+    “Dih!”
+    “Ew!” 
+    “Emang iya Lii?” 
+    Kenyataan atau bukan masalah dirinya yang paling tampan, ia anak yang mudah tersenyum, dan lesung pipinya itu membuatnya tampak lebih mudah disenangi. Liam juga hanya tertawa saja mendapat banyak respon menolak. Ia kembali duduk.
+    Setelah itu, Lucas, blasteran Cina-Belanda. Hanya saja, tampaknya gen Cinanya lebih dominan, kecuali rambutnya yang berwarna coklat, fitur eropa itu tidak dapat ditemukan. 
+    "Namaku Lucas. Lucas Finn August, 15 tahun. Aku suka dengan informasi. Aku sangat ekstrovert dan kalian tidak perlu sungkan untuk bertanya padaku apa saja. Jawaban dariku selalu up to date dan terpercaya. Aku cukup percaya diri di bidang geografi, sejarah, serta aku hobi membaca jurnal."
+    Clio maju kedepan, "Namaku Calliope Starr, panggilan aku Clio. Umurku 13 tahun dan hobi? Kurasa aku hanya melakukan banyak hal ini dan itu, tidak ada yang terlalu aku tekuni. Untuk pelajaran, aku suka matematika dan fisika."
+    Setelah Clio, giliran Sheva. 
+    "Halo semua. Namaku Elisheva Jesse Olivia. Biasa dipanggil Sheva. Meski terlihat sosial, aku seorang introvert. Aku menikmati kegiatan belajar mandiri, dan belakangan ini aku sedang belajar Bahasa Mandarin."
+    "Berapa Bahasa yang sudah kamu kuasai?" tanya Roen.
+    "Eum, Jerman, Inggris, Indonesia, Latin, dan Mandarin," jawab Sheva, tapi kelas untitled tidak terlalu kagum dengan itu. Semua dari mereka mahir berbahasa Inggris dan Indonesia.
+    "Waw. Baiklah, boleh tahu cita-citamu?" tanya Roen.
+    "Aku ingin bersekolah di Jerman dan mengambil bioteknologi."
+    Roen mengangguk, mempersilahkannya duduk. Kemudian ia memanggil anak di ujung barat barisan belakang untuk lanjut memperkenalkan diri.
+    Gadis berambut putih krim, alis putih krim, dan bulu mata dengan warna yang juga sama itu berdiri. Selain seragam kemeja putih lengan pendek dan rok kotak-kotak ungu kuning selutut, Ia mengenakan manset abu-abu dan stoking panjang, menyisakan kulit wajahnya dan jemari tangannya yang terlihat begitu putih. Mata abu-abunya itu bergerak-gerak ketika mulai memperkenalkan diri, 
+    "Aku Cassiopea Starr, bisa dipanggil Peia." Suaranya kecil, tapi tidak nyaring seperti anak kecil, seperti angin sepoi-sepoi yang membuat ujung hidung menjadi dingin. "Aku hobi membaca, eum, umur 13 tahun..."
+    Roen melihat gadis itu yang paling canggung memperkenalkan diri, "Hm, suka membaca buku itu baik. Ada berapa bahasa yang kamu kuasai?" 
+    Roen tidak berharap banyak ketika menanyakannya, setidaknya bisa menggunakan Bahasa Inggris, supaya tidak terlalu tertinggal pelajaran. 
+    "Eum, tujuh," jawab Peia sambil melihat ke arah Roen yang memberi pertanyaan. Ia tidak ragu ketika mengatakannya, ia justru tampak seperti ingin melihat reaksi Roen ketika ia mengatakannya.
+    Mata Roen melebar, pasalnya Peia itu anak yang paling ia remehkan di antara kesepuluhnya. Ia melihat ke arah Clio yang ada di kursi depannya. Clio juga mengernyit tampak ia sendiri tidak menduga adiknya bisa tujuh bahasa, tapi tanpa memperlihatkan reaksi lebih lanjut. Roen menguji. 
+    "Sebutkan!" perintah Roen.
+    "Indonesia, Inggris, Italia, Jerman, Mandarin, Korea, dan Jepang."
+    "Hasil tes IQ?"
+    "... saya belum pernah melakukannya."
+    "Baiklah, kamu boleh duduk."
+    Jes yang duduk di sebelahnya kemudian berdiri. "Namaku Jonathan Sage, disingkat J.S jadi panggilanku Jes. Umurku 14 tahun. Aku punya hobi menggambar, mengotak-atik mesin, dan mendesain mesin."
+    Nadanya datar tapi cukup normal, Roen tidak mengomentari lebih lanjut. Roen melihat bahwa Jes tampaknya tidak kesulitan berbicara di depan kelas, tidak pemalu juga. Sedari tadi ia perhatikan juga tidak berekspresi apa-apa dengan perkenalan teman-temannya. Ia tidak kagum, tidak tersenyum, tidak bertepuk tangan, hanya … diam. 
+    Selanjutnya, berdirilah seorang pria dengan kulit gosong, "Namaku Amos Lane, 14 tahun. Bisa dipanggil Amos. Aku gemar berolahraga, ahli judo, karate, dan silat, meski begitu, aku tidak suka melakukan kekerasan. Jadi, jika kalian butuh bantuan fisik atau yang lain juga boleh, kalian bisa bilang padaku kapanpun,” ucap Amos, tidak perlu memamerkan ototnya, di umur yang ke 14 tingginya sudah 170, itu secara tidak langsung membuat imagenya sangat kuat. 
+    "Namaku Inara Sophie Della, 14 tahun. Kalian bisa panggil aku Ina. Aku cukup yakin tidak ada mata pelajaran yang aku tidak kuasai. Hobiku berdandan dan aku suka belanja." Parasnya rupawan, dan ia mengepang rambutnya dengan telaten, juga dengan gelang mahal di tangannya.
+    Roen tersenyum tipis ia bertepuk tangan membuat anak-anak mengikutinya. Perkenalan mereka berakhir di situ. Roen memberikan jeda satu tarikan napas sebelum ia mulai memberikan misi pertama untuk kelas Untitled. 
+    "Baiklah. Sekarang aku akan minta kalian memikirkan banyak hal."
+    Ia mengambil spidol. Berdiri dan berkata, "Ingat, di sekolah ini, kebebasan kalian bersumber dari padaku. Selama aku tidak berkata tidak, maka lakukanlah sesuka hati kalian. Tapi aku punya wewenang untuk berkata 'keluar' dan kalian harus menurutinya, seperti yang tertera pada kontrak. Dan dari sekian banyak perintah nanti, hanya satu kata itu dariku yang harus kalian patuhi yaitu, ‘keluar’"
+    "Aku melarang kalian menggunakan orang tua kalian untuk protes. Jika ada apa-apa, katakan langsung di depan mataku."
+    "Ingat juga, aku tidak membuat kelas ini tanpa tujuan. Kalian diberi kebebasan. Terserah pada kalian, apakah ingin menjadi siswa bebas yang bermartabat, atau siswa bebas yang menjadi liar. Selama aku belum berkata keluar, kalian lakukanlah."
+    "Akan tetapi, sebagai penanggung jawab kalian, aku sudah merancang seluruh tugas yang harus kalian kerjakan baik secara individu maupun kelompok sampai setidaknya dua tahun ke depan. Beberapa hal yang kalian perlu perhatikan adalah."
+    Ia mulai menulis di papan tulis sesuai dengan apa yang sedang ia katakan: "Pertama, terserah kalian hendak mengerjakan PR atau tidak, tapi tentu apa saja yang kalian lakukan akan dicatat."
+    "Kemudian tentang ujian. Semua anak di dunia ini lulus sekolah dengan ujian, termasuk di Roen dan aku tidak akan mengubah itu. Tapi," ia menulis angka dua, "Kelas Untitled boleh mengambil ujian kapanpun mereka mau pada jam sekolah. Baik besok pagi kalian ingin mengerjakan soal UAS, kalian bisa melakukannya."
+    "Ketiga, terserah kalian ingin membuat jadwal individu atau jadwal kelompok, tapi aku ingin kalian membuatnya dan mengirimkan semua jadwal yang kalian buat ke email saya."
+    "Keempat, aku tahu kalian adalah anak jenius. Tapi diterima universitas tidak semudah itu, jadi pikirkan sendiri bagaimana kalian akan menyiapkan ujian universitas. Semua informasi akan beasiswa luar negeri ada di website Roen."
+    "Kelima, bertanyalah dan aku akan menjawab.”
+    Mereka semua terdiam melihat lima peraturan itu, benar-benar persis seperti tanda tangan kontrak yang pernah mereka tanda tangani untuk menjadi bagian dari kelas Untitled.
+    Setelah beberapa saat berlangsung mereka mulai bertanya pada teman sebangku.
+    Clio mengangkat tangan. “Kurasa masih akan sulit untukku, berapa mata pelajaran yang ujiannya perlu kami tempuh? Apa buku panduannya? Apakah kami harus melakukan ujian secara berurutan?”
+    “Ya. Ujian berurutan, gunakan semua buku referensi yang ada, dan pertanyaan bagus. Mata pelajaran kalian ada 13: literasi filsafat, matematika, ekonomi, sejarah dunia, sejarah Indonesia, fisika, biologi, kimia, geografi, komputer, serta satu mahakarya seni untuk kriteria kelulusan dari masing-masing cabang seni: untuk desain kalian bisa menggambar, merancang bangunan, ataupun fashion. Untuk music, ujian tetap individu kalian bisa mengkover atau menciptakan lagu. Untuk menari, kalian boleh berdansa, dance, boleh karangan sendiri, atau mengcover.”
+    “Tidak ada PKN, pelajaran olahraga, budi pekerti, Bahasa inggris, Bahasa Indonesia?”
+    “Ya, dan ujian tertulis semuanya isian, menggunakan kertas, setiap ujian batas waktunya adalah dua jam.”
+    Roen kemudian kembali duduk dan memainkan spidol di tangannya. “Untuk mengurus semua itu, aku memberikan kalian satu wali kelas. Ia yang bisa kalian minta bantuan 24/7. Ia akan datang besok pagi. Karena kalian belum memiliki printer, sebaiknya sediakan.”
+    “Aku berikan tugas pertama kalian sebagai murid untitled. Tiga esai, masing-masing membahas: sejarah Indonesia, Jurusan IPA atau IPS, dan Moralitas.”
+    Mereka tidak tampak terkejut, tapi juga tidak menduganya. Mereka benar-benar hening untuk waktu yang agak lama.
+    “Batas waktunya satu minggu. Satukan pada cloud dan berikan aku linknya.”
+    “Ada yang tidak dimengerti?”
+    Mereka paham betul. Mereka tidak perlu mengerjakan tugas bila tidak mau. Mereka bisa ujian kapan saja, tapi bisa melakukan apa saja yang mereka mau. Mereka mulai tersenyum.
+    “Kalau semua sudah mengerti, bagus. Ini sudah lewat dari jam pulang, jadi kalian bisa bergegas atau lakukanlah apa saja yang kalian mau.”
+    Saat itu, tiba-tiba Lucas mengangkat tangan, mencuri perhatian semua orang. Roen menatapnya, mempersilakannya untuk bicara. 
+    “Di lembar kontrak memang tertulis bahwa kami bisa melakukan apa saja, sama seperti yang Bapak sebutkan. Akan tetapi, juga tertulis bahwa semua kebebasan dalam sekolah ini berasal dari Bapak.” 
+    Roen mengangguk. 
+    “Bahkan jika hanya ada satu kata dari Pak Roen yang wajib kami patuhi, yaitu ‘keluar’. Bagaimana kami bisa percaya Bapak tidak akan sewenang-wenang?”  
+    Roen melihat netra Lucas kemudian ke mata anak-anak lainnya, “Jika kalian anggap aku akan sewenang-wenang, bukannya itu mengerikan? Mengingat kalian punya kesempatan untuk lebih sewenang-wenang di sekolah yang sudah aku bangun lebih dari setengah umur hidupku ini.” 
+    Roen berjalan ke arah meja Clio, “Jika aku memilih untuk sewenang-wenang dengan kalian, aku tidak akan memilih anak-anak cerdas. Aku akan memilih anak-anak yang akan memujaku sebagai penyelamat hidup mereka sehingga mereka tidak bisa mempertanyakan aku.”
+    Lucas mengendikkan bahu, “Siapa yang tahu, aku hanya berjaga-jaga.” 
+    Roen mengangguk-angguk, ia memberikan jeda sebelum jemarinya sedikit bergerak menunjuk sesuatu di ujung belakang, “Ada cctv di atas sana, jika kalian memang segitu waspada, berusahalah untuk mendapatkan akses kontrolnya jadi kalian bisa langsung melaporkanku.” 
+    Mereka semua melihat ke arah cctv. 
+    Roen lantas melihat ke arah Jes, kemudian bertanya, “Jes, apa kamu juga berpikir begitu? Aku kemari untuk macam-macam denganmu?” 
+    Jes yang dipanggil menggeleng, “Bapak memberikan sebanyak ini, apa Anda tidak akan menuntut kami untuk membayar harga apa-apa?”
+    Roen kemudian melihat ke arah Sheva, “Apa pandanganmu Sheva?” 
+    Sheva berusaha berpikir, tapi ia tidak bisa tidak setuju dengan Lucas ataupun Jes. 
+    Ina menyilangkan kakinya sambil bersedekap, “Liam kan sudah bersekolah di Pendiri Roen sejak SMP, kenapa tidak tanya pendapatnya?” 
+    Liam malah memlih untuk bercanda, “Haha, aku bahkan pernah menjadi ketua OSIS di SMP PR, jadi kalau terjadi apa-apa pada kita, aku pasti yang akan lebih dulu diselamatkan sama Pak Roen.”
+    Roen melihat ke arah Liam kemudian menghela napas, ia tidak tahu pertemuan pertama di kelas resmi ini akan berat.
+    “Saya percaya kok, Pak,” senyum Liam, “Sejauh saya mengenal Bapak, tidak ada alasan bagi saya untuk membenci Bapak.” 
+    Roen menghembuskan napas panjang, “Baiklah, terserah apa yang kalian pikirkan. Apa ada pertanyaan lain?” 
+    Clio mengacungkan jari, “Tiga belas mata pelajaran itu berlebihan. Saya hanya suka matematika dan fisika.” 
+    Roen mengangguk, “Kalian jenius, jadi kurasa 13 mata pelajaran itu masuk akal.” 
+    Clio menggeleng, “Siapa bilang saya jenius?” 
+    Roen menatap Clio, anak yang jelas tahu sendiri bahwa dirinya memang jenius dan mengatakan kalimat itu hanya untuk memancingnya. 
+    “Sama seperti membangun rumah. Jika kamu bisa menghitung pondasinya saja dan tidak bisa melakukannya, maka sia-sia. Jika kamu bisa membuat pondasinya, bahkan membangun pilar dan temboknya, tetap tidak bisa disebut rumah jika tidak ada perabotan di dalamnya. Tidak bisa disebut nyaman jika tidak ada alir atau listrik yang mengalir. Tidak aman jika tidak ada pintu dan jendela. Lebih parah lagi jika tidak ada yang mau tinggal di sana, jadi buat apa membangun setengah jalan dan tidak bisa menyelesaikannya?” ceramah Roen. 
+    “Membangun rumah saja butuh banyak hal. Apa kamu berharap untuk membangun hidupmu dengan dua mata pelajaran saja?” 
+    Clio terdiam, ia tidak berani merespon balik. Sementara Peia menatap Roen dengan kagum. 
+    Roen mundur hingga ia bisa melihat seluruh anak kelas, ia kembali bertanya dengan suara ramah, “Ada yang ingin bertanya lagi?” 
+    Melihat kelas menjadi hening Roen mengakhiri pertemuannya, “Aku tidak salah dalam memilih kalian. Aku suka pertanyaan kalian. Hari ini sampai di sini dulu, sampai jumpa lain waktu.” 
+    Roen melihat ke arah jam tangannya sebelum berjalan keluar dari kelas. 
+    Segera setelah Roen keluar mereka juga mulai keluar satu persatu dan berpencar. Anak-anak Untitled sibuk merencanakan jadwal harian mereka sendiri. Ada juga Jes, ia yang menyelesaikan tugasnya dengan kecepatan mengetik tanpa henti dan presisi yang tinggi sebelum tidur. 
+
+    ✽
+
+    Keesokan harinya, seorang guru cantik dengan pakaian elegannya masuk ke dalam kelas ketika bel masuk berdentang, wajahnya muda seperti orang 27 tahun. Guru itu mengenakan sepatu hak lima cm dan tingginya hampir sama seperti Amos. Wajahnya terlihat sangat mirip dengan seseorang yang mereka kenal. 
+    Guru itu tersenyum ramah, "Hai. Sepuluh anak sudah lengkap?"
+    Melihat tidak ada kursi yang kosong, ia lantas memperkenalkan diri, "Perkenalkan, nama aku Vivian Auger Roen. Kalian bisa panggil aku Miss Vivian. Aku akan jadi wali kelas, dan guru geografi, sejarah, matematika, ekonomi, dan fisika. Pak Roen adalah yang bertanggung jawab untuk mata pelajaran literasi, komputer, dan seni."
+    Muna yang tiba-tiba teringat dengan kepala sekolah tiba-tiba berujar, “Mirip sekali dengan Pak Roen.” 
+    Vivian hanya tersenyum, “Saya anak tunggal kepala sekolah kalian,” balasnya sebelum kembali ke topik. 
+    "Teman-teman kalau kalian perlu bimbingan belajar, kalian bisa minta ke aku, tapi karena hanya ada satu aku di sini, jadi aku minta kalian belajar dari aplikasi KelasBelajar. Setiap anak bisa mendaftar dengan kode referral UTD10SA."
+    "Juga tolong, ini ID Lineku: MissVivianR, bisa tolong salah satu dari kalian untuk buat grup kelas Untitled dan undang aku ya. Aku berusaha untuk ada buat kalian 24/7, tapi tetap ada kemungkinan aku tidak siaga ya, tolong bantuannya juga."
+    “Oh iya, sudah ada printer? Kalau ada yang minta ujian, aku akan mencetaknya langsung di kelas. Jadi? Ada yang minta ujian?"
+    Vivian hanya menanyakan pertanyaan itu untuk bercanda. Meski begitu, satu persatu tangan teracung ke atas. 
+    Vivian terdiam sebentar. Ayahnya memang membentuk suatu kelas dengan orang-orang jenius. Akan tetapi, siapa yang menduga mereka semua siap untuk ujian di hari pertama kelas diadakan? 
+    "Haha, kalian sangat semangat. Baiklah, apa saja?"
+    Vivian mendata, dan pagi itu kira-kira sampai pukul sembilan tiga puluh, mereka masing-masing mengerjakan soal ujian pertama. Kemudian, 1 jam setelahnya, delapan anak mengerjakan soal ujian kedua. Kemudian 2 jam setelahnya lima anak mengerjakan soal ujian ketiga, keempat, dan kelima.
+    Sisanya melakukan apa yang mereka mau. Sementara hari itu, Clio sudah menyelesaikan soal UAS Matematika Semester 1. Jes sudah menyelesaikan baik Matematika dan Fisika semester 1. Florie sudah menyelesaikan hingga soal UTS Biologi.
+    Peia mengerjakan tiga soal ujian literasi dan satu ujian biologi serta sejarah dunia.
+    Lucas sudah menyelesaikan soal UTS Geografi dan tiga ujian sejarah.
+    Amos menyelesaikan satu ekonomi, kimia, dan biologi.
+    Sheva menyelesaikan empat ujian ekonomi dan satu biologi.
+    Ina menyelesaikan satu ujian literasi dan keluar kelas.
+    Liam menyelesaikan satu ujian sejarah, kemudian mengambil kamera dari box dan mulai mengabadikan momen kelasnya. Ia juga membuka laptopnya dan mulai melanjutkan esai.
+    Kira-kira pukul tiga setelah Clio akhirnya meletakkan penanya kembali dalam kotak pensil. Ia benar-benar diam, melihat ke arah adiknya—yang mejanya berada di belakangnya—yang tengah belajar kimia. Ia mengambil napas sejenak sebelum berdiri dan mengetuk meja adiknya, mengatakan, "Tetesi matamu jangan lupa."
+    Peia mendongak, melihat kakaknya yang energinya sudah diserap oleh kertas-kertas ujian. 
+    "Ayo, makan siang," ajak Peia kemudian menutup bukunya, meletakkannya ke laci dan berdiri.
+    Clio mengangguk saja, ia berdiri dan langsung berjalan menuju pintu bersama adiknya.
+    "Uh, Peia, ujian matematikanya mudah sekali, huhuhu ...." dua tangan Clio sudah memegang bahu adiknya. Ia berhasil membuat sisa orang yang ada di kelas meliriknya, termasuk Miss Vivian.
+    Peia tidak bereaksi, ia hanya berjalan keluar menuju kantin.
+
+    ✽
+
+    Di kantin, Clio menyuruh adiknya membawakan makanannya sementara ia sudah meletakkan kepalanya tiduran di atas meja, menggunakan tangan sebagai bantal. Ia tidak akan bilang ke siapa-siapa kalau otaknya bekerja keras untuk menyelesaikan 8 ujian matematika itu.
+    Andai Clio tidak di kelas untitled—standar soal yang mudah—pasti tidak butuh tiga jam untuk menyelesaikan semuanya. Clio melihat ke arah jam dinding yang jarum pendeknya sudah di angka tiga. Agak kecewa, andai tadi malam ia tidak menyepelekan soal ujian dan belajar lebih banyak, ia mungkin bisa menyelesaikan soal-soal itu lebih cepat.
+    Peia menaruh dua nampan ke atas meja, membaca mood kakaknya, "Soalnya susah?"
+    "Tidak, tapi setidaknya belajarlah dari IMO Workbook. Tch, diingat-ingat kita bahkan tidak mendapat buku modul."
+    Peia mengangguk, tidak bertanya atau berkomentar lebih lanjut. 
+
+    ✽
+
+    Vivian menggeleng. Ia tidak pernah menyangka akan benar-benar berhadapan dengan para anak-anak jenius. Terima kasih kepada ayahnya yang sudah membuat kelas ini.
+    Ia melihat ke arah Jes, yang dengan datarnya menjawab setiap soal ujian fisika begitu lancar seperti mesin. Vivian bahkan tidak yakin apakah komputer bisa secepat, seteliti tanpa bugging seperti Jes.
+    Vivian termenung, ia bertanya-tanya pada dirinya sendiri, "Apakah kelas ini akan baik-baik saja? Apa yang sedang direncanakan oleh Ayahnya?"
+    Di kelas, ketika Jes pada akhirnya mengumpulkan jawaban ujian ke-16nya. 
+    "Tidak kesulitan?" tanya Vivian saat Jes menyerahkan lembar jawaban itu ke atas meja guru. 
+    Jes cuma sedikit menggeleng.
+    "Kamu sudah pernah belajar materi ini?"
+    "Beberapa pernah, tetapi fisika itu kebanyakan logika."
+    Antar alis Vivian berkerut, dan ia menyipitkan mata, "Kamu sangat jenius. Kenapa tidak lompat kelas?"
+    "Tidak, saya tidak mau terburu-buru dengan pendidikan saya. Saya lebih suka jika punya banyak sisa waktu untuk mengerjakan projek."
+    Vivian melihat bagaimana mata anak di depannya ini terlihat sayu, tidak ada emosi yang terlihat.
+    "Masa? Kalau kamu lulus lebih cepat, kamu bisa lebih fokus mengerjakan projek lebih cepat?" ucap Vivian berusaha menjalin hubungan yang baik dengan muridnya. 
+    "Tidak begitu, karena saya dituntut untuk melanjutkan bisnis keluarga ketika lulus," ucapnya seolah hal itu adalah hal yang biasa.
+    Tidak sedikit yang menyadari, Jes satu-satunya yang masih menempuh ujian hingga jam kelas selesai. Menjawab soal ujian dengan sempurna selama 8 jam penuh bukan apa yang akan dilakukan manusia pada umumnya. Sifatnya yang dingin dan kemampuannya yang mengesankan, Jes tanpa sadar telah memancing alam bawah sadar anak-anak untitled untuk mau tidak mau mengagumi sosoknya. 
+
+    ✽
+`, locked: false
+            },
+            4: {
+                content: `04 – Say No to Exam
+    Kegiatan monoton berlangsung di kelas yang katanya penuh kebebasan itu. Ujian-ujian-dan-ujian. Hal itu sama sekali bukan masalah bagi Jes, tetapi sisa anak untitled hanyalah manusia biasa dan mulai merasa bosan.
+    Sejauh ini, hal yang bisa dilakukan di kelas hanyalah belajar atau ujian. Bahkan Vivian—wali kelas pun mengomentari hal itu setelah mendengar bahwa mereka bahkan tetap ingin masuk kelas siang di hari Minggu.
+    Dalam waktu yang singkat itu, persaingan di kelas mulai terasa. Meski nilai ujian hanya diberikan secara individu, mereka merasa masih perlu bersaing. Tidak ada dari mereka yang ingin mendapat total ujian-yang-dikerjakan-dalam-sehari terendah. Masing-masing orang mendorong diri mereka untuk melakukan hal yang hampir tidak pernah mereka lakukan. Hanya saja, setelah terus menerus hanya melakukan siklus ujian dan belajar selama seminggu, mereka perlahan mulai lelah dan tanpa sadar ingin menghindar.
+    Beberapa dari mereka ada yang sempat memiliki pikiran untuk berhenti ujian dan bermain sebentar. Namun, kembali ke poin sebelumnya, karena semua teman-temannya tengah belajar, tidak ada yang bisa diajak bermain. Selain itu, mereka pasti akan dianggap orang aneh jika bermain sendirian. 
+
+    ✽
+
+    Minggu sudah berganti. Clio masuk ke kelas bersama kembarannya setelah melakukan upacara bendera. Clio duduk di kursinya, mempersiapkan pena, korektor dan penggaris. Ia baru akan bertanya ujian apa yang adiknya akan lakukan ketika matanya mendapatkan Peia sudah meletakkan buku On Generation and Corruption karya Aristotle ke atas mejanya. Kutu buku itu tampaknya menemukan hal yang ia suka untuk dilakukan di dalam kelas. 
+    Clio otomatis berkomentar, "Bagaimana dengan ujiannya? Kamu menundanya?"
+    Peia menatap balik netra kakaknya, "Kakak saja yang kerjakan, aku dapat buku bagus jadi aku mau membaca hari ini."
+    Inara yang mendengarnya lantas nimbrung, "Buku apa yang kamu baca?" Ia mendekat ke arah Peia untuk membaca judulnya. Melihat ketebalan bukunya wajahnya sudah berkerut jijik.
+    "Kenapa buku seperti itu yang kamu baca? Tidak asik sekali. Bagaimana dengan novel Jingga dan Senja? Atau Hujan?"
+    Liam ikut mengamati apa yang Peia lakukan, senyumnya mengembang dan ia berujar, "Peia, kalau siang nanti kamu senggang, mau belajar fotografi?"
+    Peia melihat ke arah Liam kemudian melirik box kamera DSLR. 
+    "Boleh?"
+    Sumringah keluar dari wajah Liam, "Tentu saja, dari kemarin aku mencari teman, tetapi kalian tampak tidak tertarik! Syukurlah ada Peia!"
+    Ina berdecih, "Dari kemarin aku senggang, kamu tidak minta pendapatku tuh?"
+    Liam melihat ke arah Ina dan mengendikkan bahu, "Kamu bukannya sudah ahli? Dari kemarin selalu saja mengkritik hasil jepretanku."
+    Amos yang mendengar itu kemudian bertanya, "Ina, aku ingin pergi ke gym kamu mau ikut? Biar tubuhmu sama kuatnya dengan mulutmu."
+    Ina melirik Amos tajam. 
+    "Apasih?! Bibir seksi nih bos!"
+    Vivian menggeser pintu kelas dan masuk dengan senyum karir. Ia mulai merasa bosan. Yang ia lakukan sebagai wali kelas sejauh ini adalah seperti mesin penjaga ujian dan printer manusia. Suasana kelas anak-anak jenius juga ternyata sangat membosankan, semua hanya ujian dan ujian. Ini tidak semenarik ekspektasinya waktu awal mendengar kelas Untitled. 
+    Hanya saja, begitu salah satu kakinya masuk ke dalam kelas hari ini. Ada nuansa berbeda yang dirasakan oleh Vivian. Ia sedikit terpana ketika anak-anak yang biasanya sudah rapi di meja masing-masing untuk ujian tiba-tiba terlihat berantakan, mereka saling mengobrol. Terlihat lebih seperti ruang kelas!
+    “Pagi!” sapa Vivian pada anak-anak dengan semangat.
+    “Pagi, Bu!” jawab anak-anak sebelum, tidak yang seperti Vivian kira, mereka tidak buru-buru bersiap untuk ujian. Mereka menggunakan sisa waktu mereka sebelum jam pelajaran pertama untuk mengobrol.
+    Lucas bertanya pada Peia, "Kamu bisa main catur?"
+    Peia menggeleng, "Kakak yang bisa, aku bahkan tidak tahu peraturannya."
+    Lucas mengangguk, "Tenang saja, aku akan jadi tutormu. Kamu akan bisa mengalahkan kakakmu."
+    Peia hanya menyeringai mendengarnya. Menurutnya ide ‘mengalahkan kakak’ itu konyol. Ada hal dalam dunia ini yang memang mustahil di lakukan. 
+    Lucas yang tidak mendapatkan respon semangat ya ia harapkan, menyadari ketidakpercayaan Peia. Jadi ia kembali menyahut.
+    "Wahh, kamu akan mengalahkan kakakmu sungguh. Tidak perlu menjadi ilmuan NASA untuk memenangkan permainan catur."
+    Vivian hanya merasa kejadian itu cukup unik. Ia meletakkan laptopnya di meja, menunggu tepat pukul 7 pagi.
+    Clio yang melihat adiknya justru bersantai-santai, mulai merasa iri. 
+    "Peiaa.. kakakmu ini sedang persiapan ujian kamu malah bersantai??"
+    “Ada yang ingin ujian pagi ini?” tanya Vivian saat pukul tujuh teng. Pertanyaan itu membuat beberapa anak otomatis mengacungkan tangan ke atas, Peia tidak termasuk. 
+    Clio melihat ke sekitar sebelum tiba-tiba berdiri.
+    "Ujian tidak ujian aku tetap jenius. Peia, ayo, main denganku saja," ucapnya sambil berdiri ke samping adiknya dan menarik lengannya.
+    Lucas tertawa, "Haha, sombong nih. Kenapa juga Peia harus memanggilmu kakak, sih? Kembar, kan?"
+    Clio langsung menatap Lucas tidak suka, sementara Lucas sama sekali tidak takut dengan Clio jadi ia hanya menggodanya dengan sedikit melebarkan matanya. 
+    “Aku tidak bisa seusia dengannya! Aku jelas lebih dewasa!" ketus Clio.
+    Lucas mendengkus mendengarnya, "Dih, alay, naik motor saja pasti belum bisa, belagu," ucapnya sebelum melihat ke arah Liam dan mengedipkan salah satu matanya. Liam yang melihat itu hanya bisa menahan senyumannya. 
+    Clio tersulut, ia berseru, "Apa! Jika aku minta, ayahku pasti langsung belikan!"
+    Sheva yang duduk di depan kursi guru itu berbalik mendengar kebisingan itu. Sheva dapat melihat Lucas sudah hendak membuka mulutnya, namun dengan cepat ia menyela, "Lucas." Karena nada suaranya yang rendah dan tegas, ucapan Sheva langsung menarik perhatian orang dalam kelas.
+    "Hentikan. Ada Miss Vivian di sini, kalian masih mau berisik?"
+    Vivian menghela napas. Ia tengah mencetak soal ujian yang diminta Jes dengan printer yang diletakkan di bawah meja guru. Vivian ikut menambahi, "Jika ingin menghargai teman kalian yang memilih ujian, jangan berisik."
+    Liam juga sudah mengangkat tangan untuk meminta soal ujian, tapi sebelum mengambil soal dari meja Vivian ia berdiri dulu mendekati Peia. "Jam sembilan. Aku akan mengajarimu menggunakan kamera." Ia mendapati anggukan Peia dan senyumnya langsung berbekas. 
+    "Peia!" Clio tidak terima.
+    Peia menekan kedua bibirnya sejenak. Ia memiih untuk memasukkan bukunya ke lemari meja. 
+    "Aku akan ujian, kakak kerjakan juga," ucapnya mengalah.
+    Florie menarik satu sudut bibirnya tipis, "Dilihat darimanapun, Peia kelihatan yang lebih dewasa tidak, sih?"
+    Clio tidak menggubrisnya, ia meminta soal ujian sebelum duduk kembali ke kursinya.
+    Mereka masing-masing mengerjakan ujian. Sampai pukul sembilan. Liam mengajak Clio dan Peia untuk ikut dengannya bermain kamera. Kemudian Amos dan Lucas memilih untuk mengganti baju mereka dan mencari kegiatan bersama anak-anak kelas lain yang tengah pelajaran olahraga, diikuti dengan Muna dan Ina yang bosan dan memilih mengikuti Lucas.
+    Florie masih ujian sampai pukul dua belas sebelum akhirnya memutuskan untuk masuk ke laboratorium biologi dan menghabiskan waktunya seharian bereksperimen. Sheva tetap di kelas, menonton video belajar.
+    Jes satu-satunya yang masih duduk dan masih terus mengerjakan ujian.
+
+    ✽
+
+    Matahari sudah condong ke arah barat dan langit tidak berawan. Vivian yang merasa sinar matahari masuk terlalu banyak melalui kaca, lantas berdiri hendak menutup tirai pada dinding kaca. Hanya saja, ada pandangan kontras ketika ia melihat ke arah luar. Ada Lucas dan Amos yang masih bermain olahraga dengan kelas lain. Ada Liam yang terlihat berjalan bersama sepasang anak kembar. Vivian melihat ke arah dua orang anak yang tampaknya masih fokus belajar, tidak terganggu sama sekali dengan sengatan cahaya matahari atau lebih tepatnya, tidak menyadarinya. 
+    Vivian menutup tirai. Ia berjalan ke sekeliling kelas. Seingatnya, Pak Roen sempat berpesan pada mereka dan juga pada dirinya agar tidak dulu membuat struktur organisasi kelas. Vivian tidak mengerti, padahal itu adalah kegiatan paling utama dan pertama ketika sebuah kelas dibuat.
+    Vivian berjalan mendekat ke arah Jes, melihatnya yang sudah mengerjakan soal ujian mata pelajaran semester tiga. Jangan tanya bagaimana bisa, selain otaknya itu bekerja seperti mesin pencarian dan tangannya menulis cursive bagai tulisan diary, Jes juga meminta Miss Vivian untuk memberinya soal ujian sampai malam hari. Jes memintanya untuk bertemu di ruang fokus perpustakaan untuk melanjutkan ujian.
+    Jes sangat bagus dalam fisika dan matematika, ia mendapatkan nilai sempurna tanpa terlihat perlu mengerahkan tenaga agar sel-sel otaknya bekerja. Untuk mata pelajaran lainnya, nilainya hampir sempurna. Vivian memeriksa latar belakang kehidupan SMPnya dan dengan prestasi sebanyak itu, ia kemungkinan besar sudah mempelajari seluruh mata pelajaran sekolah.
+    Jes dengan nama lengkap Jonathan Sage itu anak yang paling pintar dan multitalenta di kelas Untitled. Bahkan jika ia pendiam, ia pernah menjadi saingan Sheva dan Lucas di lomba debat. Itu karena pengetahuan dan kemampuan bahasanya di atas rata-rata.
+    Jika dibandingkan dengan Clio? Clio lebih manusiawi, meski berandal itu punya logika tinggi dan kemampuan memori yang kuat yang membuatnya mudah memahami konsep apa saja. Clio sangat emosional, ia ekspresif dengan apa yang diinginkannya. Clio bukan tipe orang yang mau mengalah alias sangat keras kepala. Nuansa yang berbeda dengan Jes yang tampak kalem.
+
+    ✽
+
+    Sheva sudah menyelesaikan belajarnya. Ia hendak mencari Muna untuk bermain ketika matanya menangkap Jes yang duduk di meja belakang, dengan ekspresi kosong, tangannya masih mengerjakan soal ujian.
+    "Jes."
+    Jes langsung mendongak, melihat ke arah Sheva.
+    "Ujian apa?"
+    "Sejarah Dunia, semester tiga, bab 5," jawab Jes apa adanya. 
+    "Kalau aku tunggu, apa kamu mau keluar? Kita bisa berolahraga bersama?"
+    Jes melihat sekelilingnya, kosong. Hanya ada Miss Vivian dan Sheva, keduanya menatapnya. 
+    "Tidak," ia menggeleng. 
+    Saat itu Peia berjalan masuk ke kelas dengan kamera di tangannya. Ia menyiapkan kameranya sebelum memanggil, "Jes!"
+    Jes menoleh dan jepret!
+    Peia tersenyum puas melihat hasilnya, melepas kalung kamera dan menunjukkan layarnya ke arah Jes. "Bagaimana?"
+    Jes menatap foto yang disodorkan padanya, "Apanya?"
+    Clio yang sudah menyusul masuk dengan Liam itu menyela, "Bagaimana? Tidakkah menyebalkan melihat wajahmu sendiri di foto itu? Bahkan AI sekarang lebih ekspresif daripada kamu."
+    Liam terkekeh, "Tidakkah kamu harus perbaiki gaya bicaramu, Clio?" ucapnya sambil mengusap kepala Clio yang lebih pendek darinya. 
+    Jes menatap lagi fotonya, tapi masih tidak berkomentar.
+    Suara lembut Peia kembali terdengar, "Mau tersenyum? Biar aku foto lagi."
+    Clio berdecak, "Yaampun apa dia bahkan bisa tersenyum??"
+    Alis Jes sedikit berkerut, untuk pertama kalinya ia menunjukkan ekspresi wajahnya. "Kenapa aku tidak bisa? Aku bisa tersenyum."
+    Clio mengerjapkan matanya, ia terbiasa dengan respons Lucas yang menggodanya. Ia menyangka Jes hanya akan diam seperti biasa. Tidak disangka ia benar-benar membuat Jes kesal. 
+    Liam yang berada di samping Clio juga terhenyak. Ia tidak tahu harus apa. 
+    "Sungguh? Aku yakin kau tidak akan tertawa dengan lelucon apapun, apalagi menangis menonton Seven Pounds! Psikopat," tambah Clio yang merasa menggoda Jes tampaknya menyenangkan. 
+    Liam kini menahan lengan Clio menggenggamnya agak kasar, meski nadanya masih bercanda ketika mengatakan, "Baik-baik, dek dek ...."
+    Jes mengepalkan tangannya. "Buat apa juga aku tersenyum? Minggir, aku sedang ujian."
+    Peia terdiam. Ia mengembalikan kameranya. Sebelum duduk di samping Jes dan mengamatinya.
+    Jes sudah menjadi teman sebangkunya selama seminggu. Peia tidak terlalu senang duduk di depan tetapi ingin duduk di meja dekat jendela. Jadi mau tidak mau ia duduk bersampingan dengan Jes yang sudah lebih dulu duduk di sisi kanan meja itu. Andai itu orang lain, pasti ia sudah ditanya-tanyai tentang sifat albinonya dan apa rasanya sebagai albino. Namun, Jes tidak, Jes hanya terkadang menatap wajahnya, kemudian kembali fokus mengerjakan apalah itu yang ada di atas mejanya.
+    Peia juga merasa kagum. Pasalnya, setiap ada pertanyaan, Jes selalu menjawab dengan lancar, bukan seorang pemalu seperti dirinya. Jes juga memiliki suara yang tegas tidak seperti dirinya yang volume suaranya kecil. Yang membuat hal itu terasa lebih mengesankan adalah karena Jes jauh lebih pendiam daripada dirinya. Seolah Jes sama sekali tidak membutuhkan interaksi dengan manusia lainnya.
+    "Jes, aku ingin lihat kamu tersenyum," gumam Peia.
+    Tangan Jes masih lanjut menulis dengan lancar. Ia mendengar suara lembut Peia, tetapi tidak menggubrisnya. Alasannya? Kemungkinan ia merasa menjawab soal sejarah dunia lebih mudah daripada menjelaskan alasannya.
+    Vivian hanya mengamati apa yang terjadi di kelas. Anggaplah beliau ini tidak terlihat, karenya nyatanya anak-anak Untitled lebih suka belajar langsung dari media digital. Jadi, selain membuat laporan harian tentang kelas Untitled, Vivian entah mengerjakan tugas apa dari laptop tipis 13 inchinya.
+    "Peia!"
+    Cekrek!
+    Liam melihat hasil jepretannya dan tersenyum tipis. "Memang, aku fotografer handal," komentarnya pada diri sendiri. 
+
+    ✽
+`, locked: false
+            },
+            5: {
+                content: `05 – Clio tidak terima, Jes!
+    Paduan suara fajar baru saja terdengar ketika burung-burung mulai bangun dari tidurnya, satu jam sebelum matahari terbit. Bulan pun masih tersenyum di langit ketika setiap pintu kamar anak untitled diketuk dengan keras satu persatu. Bunyi ketokan keras dan tidak beraturan itu membuat mereka kelabakan bangun untuk membuka pintu. Bertanya ada apa sebelum menghela napas. Pelaku penggedor pintu adalah Liam dan Amos yang sudah nyengir dan dengan santainya berkata, "Lari pagi, yuk."
+    Meski menggerutu, mereka sebenarnya setuju-setuju saja. Lebih dari setengah orang yaitu Ina, Sheva, Muna, Lucas, Clio, dan Florie segera menggosok gigi, cuci muka, berganti baju dan berkumpul. Yang tidak bangun meski pintu sudah digedor keras ada dua: Peia yang akhirnya bangun setelah Clio berteriak keras di telinganya, sedangkan Jes masih tidak membuka pintunya sampai sembilan orang yang sudah siap itu berkerumun di depan pintu kamarnya.
+    Matahari mulai menyisip masuk ke setiap celah-celah tirai pada pukul 5.30 dan akhirnya Jes bangun. Suara seraknya terdengar meminta mereka menunggu untuk menghentikan ketukan dan suara ramai teman-temannya dari luar.
+    "Ada apa?" tanya Jes dengan muka bantal yang membuat perhatian teman-temannya teralihkan. Badannya sedikit condong ke depan, dan tangannya mengusap matanya yang kering. Helai rambutnya berantakan seperti duri. Semakin lama mereka mengamatinya, seperti anak kecil yang kesal, antar alisnya semakin berkerut.  
+    Ina meloloskan sebuah tawa, "Hahah, dia terlihat imut saat bangun tidur,” komentarnya sebelum menambahi, “Ayo jogging sayang, jangan tidur mulu ...."
+    Mata Jes melihat ke arah Ina menggeleng dan melihat ke arah Liam, ia melangkahkan kakinya meninggalkan kamarnya satu langkah dibelakang.
+`, locked: true
+            }, // locked chapter        
+            6: {
+                content: `06 – Ketua Kelas
+    Matahari kembali terbit, ketika bel pertama berdentang hari ini, Roen melangkahkan kakinya masuk ke dalam kelas Untitled. 
+    Pembawaan Roen selalu tampak ramah, mungkin karena wajah yang memiliki guratan-guratan akibat kulit mengendur itu membentuk garis senyum dan mungkin karena mata hazelnya. Atau mungkin juga karena wajah kaukasian itu terlihat indah tak lekang waktu bagi orang-orang Indonesia.
+    "Siapa ketua kelasnya?" tanya Roen. 
+    Liam refleks mengangkat tangannya. Tindakan itu tentu mengagetkan yang lain. Mereka belum merundingkan ataupun menyetujui siapa ketua kelasnya. Bahkan Roen, melihat ke arah Liam sedikit mengangkat alis, mempertanyakan keabsahannya.
+    "Aku mengajukan diri," ucap Liam mengklarifikasi tindakannya. Setelah itu, teman-temannya ikut mengangkat tangan. Memangnya hanya Liam yang bisa diandalkan? Tidak begitu, mereka semua anak jenius, merasa diri sendiri sebagai pembuat keputusan terbaik. 
+    Sheva mengangkat tangan, begitu pula dengan Ina, mereka ikut mengajukan diri. Clio bahkan meletakkan penanya dan mengabaikan soal-soal matematika untuk mengangkat tangan. Kemudian tanpa jeda, Amos dan Lucas ikut mengangkat tangan. Dengan begitu ada 6 dari 10, sisanya yaitu Peia, Muna, Florie, dan Jes. 
+    Roen membuka tangannya dan langsung menunjuk, “Jes, kau tidak menyalonkan diri? Kenapa tidak ingin menjadi ketua kelas?”
+    Jes mengangguk, “Menurut saya ketua harus bisa mementingkan kebutuhan bersama, dan saya bukan orang seperti itu. Semua orang pasti ingin memimpin dengan baik, saya rasa saya melakukan yang terbaik dalam memimpin diri saya, tapi saya tidak akan jadi yang terbaik untuk memimpin sebuah kelompok.”
+    Roen menyunggingkan senyum sebelum terkekeh. Entah apa yang tengah dipikirkan, meski begitu ada kilasan wajah bahagia dan bangga di mata Roen. 
+    Roen kemudian melihat ke arah Florie, “Kalau Florie?” 
+    “Hm, soalnya saya menandatangani perjanjian dengan Sekolah Pendiri Roen hanya karena ingin berada di laboratorium biologi seharian. Karena Fasilitas Laboratorium saja. Jadi saya akan jarang dikelas, saya rasa tidak bisa available untuk jadi ketua yang baik.” 
+    Roen mengangguk, ia melihat ke arah Muna, “Kamu?” 
+    “Saya juga seorang musisi yang latihan berjam-jam setiap hari, Pak. Kecuali jadi ketua kelas untuk kelas khusus musik, saya percaya diri, hehe.” 
+`, locked: true
+            },
+            7: {
+                content: `07 – Indonesian, please.
+    Liam beranjak duduk. Sementara Roen bangkit kembali dari kursi guru. Ia menepukkan kedua tangannya untuk meminta perhatian kelas. 
+    "Baiklah, aku ingin menyampaikan tugas kedua kalian. Buat esai tentang tiga tokoh sejarah yang kalian sukai, siapapun boleh, dalam negeri ataupun luar negeri. Kemudian tugas kedua buat artikel tentang penemuan terbaru yang dapat dimasukkan ke dalam bidang ilmu matematika, fisika, kimia, biologi, masing-masing tujuh. Ada yang ingin bertanya--" 
+    "Ck," decakan Clio itu terdengar ke semua orang di dalam kelas membuat perhatian banyak orang tertuju ke padanya, tetapi anak itu sendiri terlalu fokus dengan kesibukannya, tidak sadar ia sudah mencuri perhatian kelas. Setelah Liam terpilih menjadi ketua kelas, Clio sudah mengeluarkan kembali dengan soal-soal matematika dari laci dan mengerjakannya.
+    Roen yang penasaran mendekat ke meja Clio. Cepat sekali anak itu memindahkan fokusnya. Mungkin karena Clio berpikir bahwa Roen tidak punya acara lain setelah melakukan pemilihan ketua. 
+    Clio sama sekali tidak sadar tengah diperhatikan oleh sang kepala sekolah.  Roen memperhatikan anak yang memiliki kerutan kuat di antar alisnya, sementara tangannya sibuk mencorat-coret di kertas, menulis panjang lebar hanya untuk dicoret dengan kasar oleh dirinya sendiri.
+    Roen memperhatikan lembar kerja yang ada di meja Clio. Menundukkan tubuhnya untuk melihat lembar soal itu lebih dekat dan menemukan bagian mana yang sudah menyulitkan muridnya. Roen tanpa sadar menaikkan alisnya ketika melihat soal perbandingan tiga segitiga.
+    "Boleh aku pinjam soalnya?" tanya Roen. 
+    Bahu Clio menegang kaget, ia terkejut Roen berada begitu dekat di depannya. Tangan Roen tanpa tergesa-gesa mengambil kertas soal yang penuh oret-oretan itu. 
+`, locked: true
+            },
+            8: {
+                content: `08 – Barusan itu palsu.
+    Clio tidur sejak Sabtu siang, dan ia baru bangun esoknya, kira-kira pukul 10 siang. Clio terbangun ketika merasa gerah karena sinar matahari sudah bersinar begitu terang sampai panasnya mengalahkan suhu AC yang menyala.
+    Clio dengan rambut yang acak-acakan merenggangkan tangannya untuk meraih hape yang ada di atas nakas. Melihat jam yang tertera dan tergelegah bangun. Dengan agak linglung ia memeriksa ulang jam dan hari di hapenya kemudian kembali menurunkannya. Ia merasa lega melihat hari ini adalah hari libur. 
+    Clio menguletkan tubuhnya ke kanan dan ke kiri sebelum matanya menangkap harta karun diatas nakas. Ada bubur ayam yang sepertinya sengaja ditinggalkan adiknya di sana. Clio yang sudah kelaparan itu segera bergegas mandi sebelum sarapan dan segera keluar dari kamar untuk mencari adiknya.
+`, locked: true
+            },
+            9: {
+                content: `09 – Liam of Untitled
+    Bulan Agustus, adalah awal bulan kedua para anak Untitled dan semester ganjil bagi siswa-siswi reguler. 
+    Kejadian yang membuat Untitled diakui hak istimewanya diantara seluruh murid Pendiri Roen. 
+    Kejadian itu berawal dari Amos yang memang mencari teman untuk diajak bermain basket dan dia mengajak anak reguler yang sedang senggang. Di baju olahraga Amos yang berwarna hitam dan merah, terdapat pin U yang ia letakkan di lengan bajunya. 
+    Saat itu masih jam pelajaran bagi anak reguler, tapi Amos melihat beberapa anak reguler yang sedang masuk ke lapangan basket, jadi ia segera menyusul dan nimbrung. 
+    “Ges, join main ya?” ucap Amos sambil berlari kecil ke arah mereka, membawa bola basket di tangannya. 
+`, locked: true
+            },
+            10: {
+                content: `10 – Paling cantik ya Clio
+    Bulan September, mulai terasa bahwa anak-anak Untitled adalah anak-anak yang berprestasi. Mereka sudah menonton pertandingan karate Amos. Juga menonton lomba biola solo Muna, serta lomba baca puisi Ina.
+    Kali ini mereka diundang untuk menonton lomba piano klasik Muna.
+    Liam asik memotret satu persatu dan mengabadikannya. Sementara Sheva yang tidak tahu ingin melakukan apa itu ikut berdiri, kemudian memanggil, "Liam!" dan memotretnya ketika menoleh. "Aku hanya penasaran apakah kami akan mempunyai foto dirimu di galeri. Kamu sibuk memotret semua orang."
+`, locked: true
+            },
+            11: {
+                content: `11 – Get Well Soon!
+    Siang hari, kira-kira jam makan siang. Florie melepaskan jas laboratoriumnya, mencuci telapak tangan dengan air mengalir dan sabun. Ia keluar dari lab, hendak mengambil bekalnya di kelas. Florie mendorong pintu, melihat Jes yang masih di meja drafting. 
+    Florie mendapati Jes yang baru saja meneguk sesuatu. 
+    Florie berusaha tidak ikut campur, ia berjalan ke tas dan mengambil bekalnya. Hanya saja, rasa penasaran membuatnya bertanya. 
+    “Jes?”
+    Jes tersentak,  ia menoleh melihat Florie yang berdiri tidak jauh darinya. Di tangannya masi ada botol minum. 
+    “Minum obat apa? Kamu sakit? Sudah makan?” tanya Florie.  
+    Entah karena pertanyaan Florie beruntun atau kenapa. Jes beberapa kali terbatuk. 
+    “Kamu tidak asal minum obat kan? Boleh aku lihat obatnya?” 
+`, locked: true
+            },
+            12: {
+                content: `12 – Jes dan Keberuntungannya
+    Keesokan paginya, kamar Liam dikunjungi anak-anak lainnya. Mereka merasa perlu melihat apakah Jes sudah baik-baik saja. Jes yang masih tidur itu menjadi tontonan. Untungnya, Jes sama sekali tidak bereaksi. Bahkan ketika Clio menoel-noel pipi Jes. Liam menyunggingkan senyum kecil melihat tingkah Clio. 
+    “Sudah-sudah, ayo, kita berangkat ke sekolah,” ucap Liam sambil meletakkan roti isi di nakas. 
+    Saat mereka berjalan bersama ke kelas. Mereka semua penasaran dengan apa yang terjadi kemarin. 
+    Liam melihat ke arah Peia, kemudian Florie, sebelum menanggapi pertanyaan yang lain. 
+`, locked: true
+            },
+            13: {
+                content: `13 – Happy Birthday, Jes!
+    Enam orang dari sembilan setuju akan hal ini. Meski baru dua anak yang berulang tahun selama hampir satu semester ini, hal mengadakan pesta kecil-kecilan itu selalu di adakan. Kemudian, tidak berbeda juga yang kali ini, Jes berulang tahun hari ini. Mereka seharusnya mengadakan pesta tengah malam, tapi enam anak tadi lebih setuju untuk mengadakannya di kelas. 
+    Muncul berbagai macam ide, dan ide satu ini adalah ide yang tidak disetujui oleh Liam, tapi semua orang yang lain setuju. Apa idenya? Lempar tepung dan telur? Tidak mungkin. Mengabaikan Jes atau menggunjing Jes di depannya supaya dia marah lalu memberikan kejutan tiba-tiba? Justru kebalikannya! Semua orang harus mengajak ngobrol, bermain, dan mengganggu Jes sampai Jes tidak tahan! 
+`, locked: true
+            },
+            14: {
+                content: `14 – Hakuna Matata
+    Perjalanan ke rumah Liam dimulai! Pukul enam pagi, mereka sudah masuk ke dalam mini van setelah meletakkan barang-barang mereka ke dalam mobil pick up yang akan mengikuti perjalanan mereka.
+    Peia duduk mengambil tempat duduk di samping jendela. Clio baru saja naik dan hendak duduk di sam-pingnya, ketika Jes sudah lebih dulu duduk di samping adiknya. Ia menghela napas dan duduk di kursi ber-seberangan dengan Jes. Lucas yang menyadarinya hanya terkekeh, menekan kepala Clio sebelum duduk di kursi paling belakang. Ia duduk bersama dengan Amos, Sheva, dan Florie.
+    Dua di depan lagi diisi oleh Ina dan Muna, sedangkan Liam duduk bersama supir di depan.
+    "Kalian sudah siap? Kita berangkat loh!"
+    Miss Vivian mengetuk jendela milik Liam. "Hubungi aku jika ada apa-apa, ya?"
+    "Tentu Miss, jangan khawatir."
+`, locked: true
+            },
+            15: {
+                content: `15 – Apa Ada Caviar?
+    Mobil semakin lama semakin sunyi, anak-anak untitled tertidur dalam perjalanan. Barulah, lima jam kemudian, mereka dibangunkan untuk turun dari mobil. 
+    "Hn?" Muna melongo melihat pintu mobil dibuka oleh pria bersetelan jas dan senyuman ramah. Ia hanya bisa balas tersenyum bingung sambil menunggu teman-temannya yang lain untuk turun.
+    Liam memimpin jalan sampai ke depan pintu rumah, sambil tersenyum lebar: "Selamat datang ke gubuk saya!"
+    Muna yang merasa gemas langsung menoyor kepala Liam. "Gubak-gubuk!" Pintunya saja sudah setinggi empat meter. Pilar-pilar dan bentuk rumahnya sudah seperti istana saja. Saking termangunya, mereka hanya bisa diam tanpa bereaksi.
+    Mereka diajak masuk melewati lounge, melihat lukisan yang tinggi dan lebar dipajang di sepanjang dinding. Kemudian foto-foto pigura keluarga juga berjejer. Jes yang notabenenya dari Amerika itu membisu kagum.
+`, locked: true
+            },
+            16: {
+                content: `16 – Tidak Sengaja Terbawa Arus
+    Liam berwajah masam ketika hari sudah sore dan Jes sama sekali tidak terlihat. "Apa yang bocah itu lakukan? Mengerjakan PR saja tidak becus." 
+    Lucas justru tersenyum miring, "Tidakkah kamu sudah menduganya? Jes menemani anak itu karena tidak mau bermain dengan kita. Jes tidak pernah peduli kita menunggu atau tidak, seperti biasa, ia punya caranya sendiri untuk menghabiskan waktu."
+    Liam menjatuhkan kayu-kayu yang dikumpulkannya ke atas pasir, tempat mereka akan menyalakan api unggun. "Memangnya kenapa harus begitu? Apa aku membuatnya tidak nyaman? Kita hanya ingin main bersama, apa Jes juga tidak suka?"
+`, locked: true
+            },
+            17: {
+                content: `17 – Golden Tabby Tiger
+    Anak-anak untitled merasa segar setelah mandi. Mereka sudah bermain bersama di ruang tengah sebelum mereka dikumpulkan lagi untuk makan malam. 
+    Peia dan Clio sudah saling mengobrol seperti tidak terjadi apa-apa. Mereka hanya tampak menanti-nanti makanan apa yang akan disediakan Liam untuk mereka. 
+    Noah adik Liam yang baru kembali dari toilet melihat ruangan yang sudah penuh dengan teman-teman kakaknya. 
+    Liam  yang melihatnya, mengulurkan tangannya, baru saja ingin mengajaknya untuk duduk bersebelahan ketika Noah ternyata sudah lari lebih dahulu ke arah Jes. 
+`, locked: true
+            },
+            18: {
+                content: `18 – Prioritas
+    Pagi itu, mereka semua bangun, dan menyapa orang tua Liam. "Oh, tante cantik sekali," Ina mengatakan pikirannya terang-terangan.
+    "Hoho! Tentu saja, tidakkah terlihat ketika kalian melihat Liam, seberapa cantik Ibu yang melahirkannya."
+    Ah... tidak hanya wajah, mereka bisa mengetahui dari siapa sifat narsis Liam itu diturunkan.
+    Jes mengingat tadi malam sepertinya ia melihat pemandangan bintang malam juga seekor harimau aneh, tapi sepertinya itu hanya mimpi, jadi ia tidak mengungkitnya sama sekali.
+    Orang tua Liam melihat ke arah Jes, agak lama dengan tatapan yang tidak bisa dijelaskan sehingga membuat mereka agak bingung.
+    Jes tidak mengerti, ia menatap ke arah Liam, yang juga tidak mengerti mengapa orang tuanya menatap intens Jes.
+`, locked: true
+            },
+            19: {
+                content: `19 – C'est La Vie
+    Sore itu, anak-anak untitled sudah kembali ke dalam lingkungan Sekolah Pendiri Roen. 
+    "Jam berapa sih, sepi banget?" celetuk Lucas. 
+    Anak-anak untitled diminta untuk berkumpul dulu di dalam kelas atas perintah kepala sekolah. Jadi mereka berjalan sambil mengobrol. 
+    Muna tersadar, "Eh, iya, kemarin itu kelas reguler sudah pembagian rapot bukan sih?" 
+    Liam ikut mengernyit, "Iya, ya. Gak sadar udah akhir semester aja." 
+    Clio menaikkan alisnya, "Lamaa, akhirnya libur jugaa!"
+    Lucas mengernyit, melingkarkan tangannya ke leher Clio, "Kenapaa? Capek ujian mulu? Capek begadang? Gimanaa berhasil ngalahin Jes belumm, Calliope?"
+    Anak-anak untitled tertawa kecil mendengarnya. 
+`, locked: true
+            },
+            20: {
+                content: `20 – Nyaris
+    Semester dua dimulai!
+    Anak-anak kelas untitled kembali mengenakan seragam abu-abu ungu mereka, begitu semangat berangkat pagi-pagi dan berkumpul di kelas. "Dih, Clioo, chat aku gak pernah dibales, sombong benerr," goda Lucas ketika melihat sepasang anak kembar itu masuk ke kelas. 
+    "Gimana liburannya adik-adikk?" goda Lucas. 
+    "Baru dateng udah brisik banget." Clio mengambil tempat duduk seperti biasa, di meja depan sebelah Sheva. 
+    Bersamaan dengan itu, Jes juga membuka pintu. Mengabaikan sapaan yang lainnya dan hanya berjalan ke tempat duduk di sebelah Peia. 
+    "Jess!" senyum Peia mengembang memanggil, tapi Jes masih melamun dalam pikirannya, tidak mendengar apapun yang ia katakan. 
+    Situasi kelas menjadi lebih heboh lagi ketika Ina masuk ke kelas. 
+`, locked: true
+            },
+            21: {
+                content: `21 – Dua Jonathan Sage
+    Jes yang pingsan, tapi Liam ikut pucat. Liam segera meminta pada ayahnya agar mendatangkan dokter ke dorm sekolahnya. Ia juga harus segera meminta beberapa bantuan temannya dan juga memberitahukan situasi pada Miss Vivian dan kepala sekolah. 
+
+    ✽
+
+    Seragam Jes kotor baik oleh jejak sepatu maupun darah. Liam memantapkan niatnya, tangannya mulai melepaskan dasi Jes. Melihat bercak darah yang tertutup, Liam segera membuka kancing bajunya, berpikir mungkin ada luka lain yang harus segera ditangani 
+`, locked: true
+            },
+            22: {
+                content: `22 – Don’t Cry
+    Jes masih tampak seperti biasa, wajah yang datar dan mata yang sayu. Jes terlihat baik. Meskipun demikian, Liam masih memaksa Jes untuk sekamar dengannya, Jes ke kamar Liam atau Liam ke kamar Jes. Herannya Jes mengangguk menurut ketika Liam menyarankan hal itu.
+    "Maksudku, kalau kita sharing kamar, artinya kamu melakukan kegiatan di kamar ku, kan?" 
+    Jes melongo. "Tidak, tidak mau. Aku lakukan pekerjaanku di kamarku, kamu jangan ganggu, jangan sembarangan masuk. Aku makan dan tidur bersamamu." 
+    Liam menyipitkan mata. Memberi jeda bagi sel-sel otaknya untuk berpikir sebelum mengangguk, "Baiklah, begitu juga tidak apa-apa."
+`, locked: true
+            },
+            23: {
+                content: `23 – Apa Yang Harus Dilakukan?
+    Roen mengajak anak-anak yang tidak terlalu dekat, yang tidak bisa berhenti menangis, atau pucat untuk kembali ke dorm, beristirahat untuk hari ini, ia sendiri juga harus mengatasi dosen musik yang pembelajarannya terhenti.
+    Clio sudah histeris, Amos tidak merasa bisa mengendalikan perasaan sedihnya. 
+    Liam memperhatikan situasi anak-anak untitled. Kacau. Liam harus menunggu di rumah sakit, jadi ia berharap Lucas bisa menemaninya. Akan tetapi, melihat wajah pucat Lucas, ia tidak sampai hati dan menyuruhnya kembali. 
+    Sheva mendekat ke arah Liam, "Mau aku temani?"
+`, locked: true
+            },
+            24: {
+                content: `24 – Semua Berharap Ini Hanya Mimpi
+    Peia berpikir sejenak, bagaimana untuk mengatakan masa lalunya.
+    "Jadi..." Peia tidak tahu harus mulai darimana. "Jadi... awalnya, awalnya keluargaku adalah keluarga bahagia. Em.. setidaknya sampai usiaku lima tahun?"
+    Liam mengangguk, ia memiliki banyak pertanyaan, tapi belajar dari Peia yang selalu diam mendengarkan, ia mengikutinya.
+    "Setelah itu, ayah dan ibu bercerai. Clio ikut dengan ayah dan aku ikut dengan Ibu."
+    "En." Liam mengangguk.
+    "Ibu menikah lagi."
+    "En."
+`, locked: true
+            },
+            25: {
+                content: `25 – Bangun, Inilah Kenyataan
+    Tiga anak untitled jatuh sakit: Clio, Lucas, dan Sheva. Keputusan bersama, kelas untitled diliburkan untuk dua hari.
+    "Hahaha, Lucas, aku ditampar dan masih baik-baik saja. Lihat dirimu." Liam masuk ke kamar Lucas, terkekeh kecil melihat Lucas yang berkeringat dingin, menyembunyikan tubuhnya dibalik selimut.
+    "Ish, Liam, haruskah kamu menggangguku?"
+    "Ada apa di pikiranmu? Katakan."
+    "Ck, aku hanya memikirkan Aleena."
+    "Ada apa dengan Aleena?"
+`, locked: true
+            },
+            26: {
+                content: `26 – Surat Jes (English)
+    Cerita tentang meninggalnya satu anak untitled menjadi buah bibir bagi anggota sekolah Pendiri Roen.
+    Jonathan Sage. Ada orang yang dikirim untuk mengambil seluruh gambar dan catatannya di asrama yang sudah rapi dalam map arsip yang tertata dalam kardus.
+    Tiga bulan kemudian, sebuah paket besar dialamatkan dari tulisan JES besar kepada kelas untitled. Mereka mendapatkan empat jilid buku tentang alat-alat bantu dan alat elektronik, komputer. Dua jilid kumpulan desain yang dibuat Jes. Satu jilid kumpulan hipotesis yang dimiliki oleh Jes dengan catatan yang sudah terbukti dan yang belum terbukti. Kemudian 9 buku dengan judul "For The Untitled".
+`, locked: true
+            },
+            27: {
+                content: `27 – Surat Jes (Indonesia)
+    Cerita tentang meninggalnya satu anak untitled menjadi buah bibir bagi anggota sekolah Pendiri Roen.
+    Jonathan Sage. Ada orang yang dikirim untuk mengambil seluruh gambar dan catatannya di asrama yang sudah rapi dalam map arsip yang tertata dalam kardus.
+    Tiga bulan kemudian, sebuah paket besar dialamatkan dari tulisan JES besar kepada kelas untitled. Mereka mendapatkan empat jilid buku tentang alat-alat bantu dan alat elektronik, komputer. Dua jilid kumpulan desain yang dibuat Jes. Satu jilid kumpulan hipotesis yang dimiliki oleh Jes dengan catatan yang sudah terbukti dan yang belum terbukti. Kemudian 9 buku dengan judul "For The Untitled".
+`, locked: true
+            },
+        };
+
+        let currentChapter = 1;
+
+        function loadChapter(num) {
+            currentChapter = Number(num);
+            const chapter = chapters[currentChapter];
+
+            if (chapter.locked) {
+                // Get preview text
+                let preview = chapter.content.substring(0, 400); // first 200 chars
+                // Display preview with fade effect
+                document.getElementById('chapter-content').innerHTML = `<div class= "locked-preview">${formatTextForHTML(preview)}<div class="fade-overlay"></div></div>`;
+            } else {
+                const rawText = chapter.content;
+                document.getElementById('chapter-content').innerHTML = formatTextForHTML(rawText);
+            }
+
+            document.getElementById('chapterSelect').value = currentChapter;
+        }
+
+
+        function formatTextForHTML(text) {
+            return text
+                .replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+                .replace(/  /g, "&nbsp;&nbsp;")
+                .replace(/\n/g, "<br>");
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentChapter > 1) loadChapter(currentChapter - 1);
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            let next = currentChapter + 1;
+            if (chapters[next]) loadChapter(next);
+        });
+
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (text === '') return;
+            const commentList = document.getElementById('commentsList');
+            const p = document.createElement('p');
+            p.textContent = text;
+            commentList.appendChild(p);
+            input.value = '';
+            commentList.scrollTop = commentList.scrollHeight;
+        }
+
+        // Load first chapter by default
+        loadChapter(1);
+
+        document.getElementById("comment-input").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = {
+                formName: "UntitledCommentaries", // target sheet
+                input: e.target.comment.value,
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbxHKOczKA1DBsXVJ0i3VRNPURrk0E90gldq1anxNL8gBFOW_-CmfXuvbUhylPX91J3ExA/exec", {
+                method: "POST",
+                body: JSON.stringify(formData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert("Saved to " + data.sheet + " successfully!");
+                    form.reset();
+                })
+                .catch(err => alert("Error: " + err));
+        });
+    </script>
+</body>
+
+</html>

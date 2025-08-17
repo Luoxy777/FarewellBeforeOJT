@@ -1,0 +1,523 @@
+.irish-grover-regular {
+    font-family: "Irish Grover", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.inria-serif-light {
+    font-family: "Inria Serif", serif;
+    font-weight: 300;
+    font-style: normal;
+    color: #303030;
+}
+
+.inria-serif-regular {
+    font-family: "Inria Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #303030;
+
+}
+
+.inria-serif-bold {
+    font-family: "Inria Serif", serif;
+    font-weight: 700;
+    font-style: normal;
+    color: #303030;
+
+}
+
+.inria-serif-light-italic {
+    font-family: "Inria Serif", serif;
+    font-weight: 300;
+    font-style: italic;
+    color: #303030;
+
+}
+
+.inria-serif-regular-italic {
+    font-family: "Inria Serif", serif;
+    font-weight: 400;
+    font-style: italic;
+    color: #303030;
+
+}
+
+.inria-serif-bold-italic {
+    font-family: "Inria Serif", serif;
+    font-weight: 700;
+    font-style: italic;
+    color: #303030;
+
+}
+
+.gradient-text {
+    background: radial-gradient(circle at center, #DC7090 0%, #303030 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+.body {
+    background-color: #FFFCF9;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+.box {
+    border-radius: 10px;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+.box1 {
+    background-image: url(assets/bic_rectangle.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.contactme-content {
+    margin: -40px;
+    background-image: url(assets/contactmebg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 20px;
+    border-radius: 12px;
+    width: 800px;
+    height: 440px;
+    position: relative;
+    text-align: center;
+}
+
+/* Tombol X (close) */
+#close-btn {
+    background-image: url(assets/closemodal.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.osint {
+    background: url("assets/bg-text-modal.svg") no-repeat center center;
+    background-size: 100% 100%;
+    resize: none;
+    width: 80%;
+    height: 200px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border: none;
+
+}
+
+.osint:focus {
+    outline: none;
+}
+
+
+.form-osint {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.form-osint textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.send-osint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.form-osint textarea::placeholder {
+    text-align: center;
+    /* makes sure it's centered too */
+}
+
+.box2 {
+    background-image: url(assets/left_upper_rectangle.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.box3 {
+    background-image: url(assets/music_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.box4 {
+    background-image: url(assets/skill_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.box5 {
+    background-image: url(assets/Intro_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.sub-box1 {
+    background-image: url(assets/contact_me_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100px;
+}
+
+.sub-box1:hover {
+    background-image: url(assets/contact_me_bg_hover.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100px;
+}
+
+.sub-box1:active {
+    background-image: url(assets/contact_me_bg_hover.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100px;
+}
+
+.sub-box2 {
+    background-image: url(assets/my_resume_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100px;
+}
+
+.sub-box2:hover {
+    background-image: url(assets/my_resume_bg_hover.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100px;
+}
+
+.sub-box3 {
+    background-image: url(assets/my_book_bg.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-grow: 1;
+    margin-left: -7vw;
+    z-index: 1;
+    position: relative;
+}
+
+.project-box {
+    background-image: url(assets/inside_left_upper_rec.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.project-box:hover {
+    background-image: url(assets/inside_left_upper_rec_hover.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.active-section {
+    background-image: url(assets/inside_left_upper_rec_hover.svg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    /* ikuti warna teks parent */
+    font: inherit;
+    /* hapus font default */
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-container {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    /* adjust thickness */
+    border-radius: 8px;
+    overflow: hidden;
+    background: url("assets/progress-behind.svg") no-repeat center/cover;
+    cursor: pointer;
+}
+
+.introduction-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    white-space: pre-line;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: url("assets/progress.svg") no-repeat center/cover;
+    transition: width 0.2s ease;
+}
+
+.introduction {
+    background: url("assets/what-about-you.svg") no-repeat center center;
+    background-size: contain;
+    color: #DC7090;
+    height: 40px;
+    width: 100%;
+}
+
+.introduction:hover {
+    background: url("assets/what-about-you_hover.svg") no-repeat center center;
+    background-size: contain;
+    color: #303030;
+    height: 40px;
+    width: 100%;
+}
+
+.what-about-you {
+    background: url("assets/what-about-you.svg") no-repeat center center;
+    color: #DC7090;
+    background-size: contain;
+    height: 40px;
+    width: 100%;
+}
+
+.what-about-you:hover {
+    background: url("assets/what-about-you_hover.svg") no-repeat center center;
+    color: #303030;
+    background-size: contain;
+    height: 40px;
+    width: 100%;
+}
+
+.active-tab {
+    background: url("assets/introduction.svg") no-repeat center center;
+    background-size: contain;
+    color: #303030;
+    height: 40px;
+    width: 100%;
+}
+
+.custom-textarea {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 80%;
+    height: 200px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    border: none;
+    background: url("assets/Wby_textarea.svg") no-repeat center center;
+    background-size: 100% 100%;
+    background-color: #f9f9f900;
+    resize: none;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    /* removes default highlight */
+}
+
+.send {
+    background: url("assets/send.svg") no-repeat center center;
+    background-size: contain;
+    width: 40px;
+    height: 108px;
+    margin-top: 28px;
+    border: none;
+    cursor: pointer;
+}
+
+.send:hover {
+    background: url("assets/send_hover.svg") no-repeat center center;
+    background-size: contain;
+}
+
+.questions {
+    color: #303030;
+    font-size: 14px;
+    max-width: 72%;
+    margin-left: 20px;
+    margin-top: 0px;
+    margin-bottom: 8px;
+    white-space: pre-line;
+}
+
+.pre-order-title {
+    margin-left: 140px;
+}
+
+.scrollable {
+    overflow-y: auto;
+    max-height: calc(472px - 48px);
+    /* sisa tinggi setelah judul */
+    width: 100%;
+
+    /* sembunyikan scrollbar di berbagai browser */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE & Edge lama */
+}
+
+.scrollable::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Edge */
+}
+
+.book-title {
+    margin-left: 100px;
+    max-width: 200px;
+    color: #303030;
+}
+
+.book-desc {
+    margin-left: 60px;
+    max-width: 200px;
+    font-size: 14px;
+    color: #303030;
+}
+
+.overlayM {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    padding: 40px 20px;
+    z-index: 999;
+}
+
+.close-btnM {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+/* Gallery layout with flex */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.gallery img {
+    height: 240px;
+    width: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.gallery img.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.lightbox img {
+    max-height: 90%;
+    max-width: 90%;
+    border-radius: 10px;
+}
+
+.lightbox .nav {
+    position: absolute;
+    top: 50%;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+.lightbox .prev {
+    left: 30px;
+}
+
+.lightbox .next {
+    right: 30px;
+}
+
+.overlayM::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
