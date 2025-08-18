@@ -209,10 +209,10 @@ function loadSong(index) {
 function playPause() {
     if (audio.paused) {
         audio.play();
-        playPauseButton.innerHTML = '<img src="/assets/pause_ic.svg" alt="Pause Icon" class="icon">';
+        playPauseButton.innerHTML = '<img src="assets/pause_ic.svg" alt="Pause Icon" class="icon">';
     } else {
         audio.pause();
-        playPauseButton.innerHTML = '<img src="/assets/play.svg" alt="Play Icon" class="icon">';
+        playPauseButton.innerHTML = '<img src="assets/play.svg" alt="Play Icon" class="icon">';
     }
 }
 
@@ -264,9 +264,9 @@ function updateVolumeUI() {
     const levelHeight = audio.volume * 100;
     volumeLevel.style.height = `${levelHeight}%`;
     if (audio.volume === 0) {
-        volumeIcon.innerHTML = '<img src="/assets/mute.svg" alt="Mute Icon" class="icon">';
+        volumeIcon.innerHTML = '<img src="assets/mute.svg" alt="Mute Icon" class="icon">';
     } else {
-        volumeIcon.innerHTML = '<img src="/assets/volume.svg" alt="Volume Icon" class="icon">';
+        volumeIcon.innerHTML = '<img src="assets/volume.svg" alt="Volume Icon" class="icon">';
     }
 }
 
